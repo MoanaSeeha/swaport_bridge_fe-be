@@ -1,13 +1,29 @@
 import './style.css'
 
 import React, { useEffect, useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux';
 
 import Header from '../Header'
 import { Link } from 'react-router-dom'
+import { connect, isConnected, setChain } from "../../store/accountReducer";
 
 const Layout = (props) => {
   const [connectStatus, setConnectStatus] = useState(false)
-  const connectMetamaskHandler = () => {}
+  const is_Connected = useSelector(isConnected);
+  const dispatch = useDispatch();
+
+  const connectMetamaskHandler = async () => {
+    if(!is_Connected) {
+      await window.ethereum.send("eth_requestAccounts");
+      dispatch(setChain(Number(window.ethereum?.networkVersion)));
+      await window.ethereum.request({
+        method: "wallet_requestPermissions",
+        params: [{ eth_accounts: {}}]
+      });
+      const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+      if (accounts[0]) dispatch(connect(accounts[0]))
+    }
+  }
   const connectWalletHandler = () => {}
   return (
     <div className="homepage">

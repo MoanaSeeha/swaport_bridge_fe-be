@@ -1,14 +1,19 @@
 import './style.css'
 
 import React, { useState } from 'react'
-
+import { useSelector } from "react-redux";
 import { Link } from 'react-router-dom'
+
+import { isConnected, connectedAccount } from "../../store/accountReducer"
 
 const Header = (props) => {
   const connectHandler = () => {
     props.setConnectStatus(true)
     console.log('connectStatus>>>')
+    
   }
+  const is_Connected = useSelector(isConnected);
+  const account = useSelector(connectedAccount);
   const [mobile, setMobile] = useState(false)
   const [swapStatus, setSwapStatus] = useState(false)
   const [stableStatus, setStableStatus] = useState(false)
@@ -122,7 +127,7 @@ const Header = (props) => {
                   props.setConnectStatus(true)
                 }}
               >
-                Connect
+                {!is_Connected?'Connect':account.substring(0, 5) + '...'+account.substring(account.length-4, account.length)}
               </div>
             </div>
           </div>
@@ -172,7 +177,7 @@ const Header = (props) => {
           </div>
         </div>
         <div className="header_connect" onClick={connectHandler}>
-          CONNECT
+        {!is_Connected?'Connect':account.substring(0, 5) + '...'+account.substring(account.length-4, account.length)}
         </div>
         <div
           className="mobile_btn"
