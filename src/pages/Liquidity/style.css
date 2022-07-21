@@ -385,5 +385,124 @@
     padding: 12px 12px;
   }
 }
+/* TransferModal>> */
+.liq_modal {
+  position: absolute;
+  top: 0px;
+  margin-right: 0%;
+  z-index: 300;
+  top: 50%;
+  right: 50%;
+  transform: translate(50%, -50%);
+  background: rgba(30, 44, 55, 0.5);
+  padding: 0px 10px;
+  width: 600px;
+  height: 600px;
+  border-radius: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 150;
+}
+.liq_modal_layout {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  width: 75%;
+  height: 52%;
+  z-index: 200;
+  border-radius: 25px;
+  background: #1e2c37;
+  border: 1px solid #3d9bff;
+  color: white !important;
+  margin: 20px;
+}
+.close_btn {
+  cursor: pointer;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+}
+.liq_modal_text {
+  /* position: absolute;
+    top: 25px; */
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* justify-content: center; */
+}
+.liq_modal_topic_text {
+  margin-top: 3px;
+  margin-bottom: 5px;
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  margin-left: 20px;
+}
+.transfer_one_btn {
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  border-radius: 12px;
+  margin-left: 20px;
+  margin-right: 20px !important;
+  width: 88%;
+  background: #314859;
+  padding: 12px 0px;
+  margin-bottom: 8px;
+}
+.transfer_two_btn {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 12px;
+  margin-left: 20px;
+  margin-right: 20px !important;
+  width: 88%;
+  background: #314859;
+  padding: 12px 0px;
+}
+@media screen and (max-width: 1400px) {
+  .liq_modal {
+    font-size: 11px !important;
+  }
+}
+@media screen and (max-width: 1200px) {
+  .liq_modal {
+    font-size: 9px !important;
+  }
+}
+@media screen and (max-width: 768px) {
+  .liq_modal {
+    font-size: 14px !important;
+  }
+}
+@media screen and (max-width: 600px) {
+  .liq_modal {
+    font-size: 11px !important;
+    margin-left: -4% !important;
+  }
+}
 
+.import_token {
+  position: relative;
+  color: white;
+  width: 80%;
+  display: flex;
+  justify-content: center;
+}
+.import_token input {
+  background-color: #314859;
+  color: white;
+  width: 80%;
+  border-radius: 10px;
+  padding: 15px 0px 15px 15px;
+  border-style: none;
+  font-size: 24px;
+}
 /* End  */

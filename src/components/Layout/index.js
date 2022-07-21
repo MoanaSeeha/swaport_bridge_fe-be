@@ -2,6 +2,7 @@ import './style.css'
 
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux';
+import { ethers } from "ethers";
 
 import Header from '../Header'
 import { Link } from 'react-router-dom'
@@ -21,9 +22,14 @@ const Layout = (props) => {
         params: [{ eth_accounts: {}}]
       });
       const accounts = await window.ethereum.request({ method: 'eth_accounts' });
-      if (accounts[0]) dispatch(connect(accounts[0]))
+      if (accounts[0]) dispatch(connect({account: accounts[0]}))
     }
   }
+
+  useEffect(()=>{
+    connectMetamaskHandler();
+  },[]);
+
   const connectWalletHandler = () => {}
   return (
     <div className="homepage">

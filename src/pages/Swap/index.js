@@ -1,60 +1,58 @@
 import './style.css'
 
 import React, { useEffect, useState } from 'react'
+import { ethers } from 'ethers';
+import { useSelector } from 'react-redux';
 
+import { connectedAccount } from "../../store/accountReducer";
 import Header from '../../components/Header'
 import { Link } from 'react-router-dom'
 import SelectSwap from '../../components/SelectSwap'
+import RouterABI from '../../abis/v2Router.json';
 
 const Swap = () => {
-  const from_data = [
+  const tokens_data = [
     {
-      chainName: 'BNB',
+      chainName: 'USDC',
       chainIcon: '/coin/usdt.svg',
       //   coinName: 'ETH',
       coinIcon: '/coin/usdt.svg',
-    },
-    {
-      chainName: 'USDC',
-      chainIcon: '/coin/usdc.svg',
-      //   coinName: 'BSC',
-      coinIcon: '/coin/usdc.svg',
-    },
-    {
-      chainName: 'XUS',
-      chainIcon: '/coin/xus.svg',
-      //   coinName: 'DBX',
-      coinIcon: '/coin/xus.svg',
-    },
-  ]
-  const to_data = [
-    {
-      chainName: 'BTC',
-      chainIcon: '/coin/usdc.svg',
-      //   coinName: 'BNB',
-      coinIcon: '/coin/usdc.svg',
+      address:'0xd02F9F362d147Ee8F66BdfAfafa5Fa073cad67d5'
     },
     {
       chainName: 'USDT',
-      chainIcon: '/coin/usdt.svg',
-      //   coinName: 'ETH',
-      coinIcon: '/coin/usdt.svg',
+      chainIcon: '/coin/usdc.svg',
+      //   coinName: 'BSC',
+      coinIcon: '/coin/usdc.svg',
+      address:'0xbD790D62FCB1ee94Fe1A89ec155DCB7fb82d85FB'
     },
-    {
-      chainName: 'XUS',
-      chainIcon: '/coin/xus.svg',
-      //   coinName: 'DBX',
-      coinIcon: '/coin/xus.svg',
-    },
-  ]
+  ];
+  
   const [connectStatus, setConnectStatus] = useState(false)
   const [mobileStatus, setMobileStatus] = useState(false)
   const [transferStatus, setTransferStatus] = useState(false)
   const [open, setOpen] = useState(false)
   const [toOpen, setToOpen] = useState(false)
-
-  const transferHandler = () => {
-    setTransferStatus(true)
+  const [selectedTokenInfo,setselectedTokenInfo] = useState({
+    A: {
+      address:'',
+      amount:''
+    },
+    B: {
+      address:'',
+      amount:''
+    },
+    path: ['0xd02F9F362d147Ee8F66BdfAfafa5Fa073cad67d5', '0xbD790D62FCB1ee94Fe1A89ec155DCB7fb82d85FB']
+  });
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const connected_account = useSelector(connectedAccount);
+  const transferHandler = async() => {
+    setTransferStatus(true);
+    console.log(selectedTokenInfo.A.address, selectedTokenInfo.B.address);
+    const signer = provider.getSigner(connected_account);
+    const router = new ethers.Contract('0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a', RouterABI, signer);
+    let a = await router.getReserves('0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a', selectedTokenInfo.A.address, selectedTokenInfo.B.address);
+    console.log('reserve', a);
     console.log('transferStatus')
   }
   const connectMetamaskHandler = () => {}
@@ -102,7 +100,17 @@ const Swap = () => {
         {/* From */}
         <div className="from_text">From</div>
         <div className="select_input_swap">
-          <input type="text" placeholder="Transfer amount" />
+          <input type="text" placeholder="Transfer amount" onChange={(e) => {
+            setselectedTokenInfo({
+              B:selectedTokenInfo.B, 
+              A:{
+                address:selectedTokenInfo.A.address,
+                amount:e.target.value
+              },
+              path: selectedTokenInfo.path
+            }) 
+            
+          }}/>
           <div className="balance_text_swap">
             <span className="balance">Balance:</span>
             <span className="dbx">{} DBX</span>
@@ -114,8 +122,17 @@ const Swap = () => {
 
           <div className="select_coin">
             <SelectSwap
-              data={from_data}
-              onChange={() => {}}
+              data={tokens_data}
+              onChange={(e) => {
+                setselectedTokenInfo({
+                  B:selectedTokenInfo.B, 
+                  A:{
+                    address:tokens_data[e].address,
+                    amount:selectedTokenInfo.A.amount
+                  },
+                  path: selectedTokenInfo.path
+                }) 
+              }}
               setOpen={setOpen}
               open={open}
             />
@@ -124,7 +141,17 @@ const Swap = () => {
         {/* TO  */}
         <div className="to_text_swap">To</div>
         <div className="select_input_swap">
-          <input type="text" />
+          <input type="text" onChange={(e) => {
+            setselectedTokenInfo({
+              A:selectedTokenInfo.A, 
+              B:{
+                address:selectedTokenInfo.B.address,
+                amount:e.target.value
+              },
+              path: selectedTokenInfo.path
+            }) 
+            
+          }}/>
           <div className="balance_text_swap">
             <span className="balance">Balance:</span>{' '}
             <span className="dbx">{} DBX</span>
@@ -135,8 +162,17 @@ const Swap = () => {
           </div>
           <div className="select_coin">
             <SelectSwap
-              data={to_data}
-              onChange={() => {}}
+              data={tokens_data}
+              onChange={(e) => {
+                setselectedTokenInfo({
+                  A:selectedTokenInfo.A, 
+                  B:{
+                    address:tokens_data[e].address,
+                    amount:selectedTokenInfo.B.amount
+                  },
+                  path: selectedTokenInfo.path
+                }) 
+              }}
               setOpen={setToOpen}
               open={toOpen}
             />

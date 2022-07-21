@@ -5,12 +5,12 @@ export const accountSlice = createSlice({
   initialState: {
     account: '',
     isConnected: false,
-    chain: 0
+    chain: 0,
   },
   reducers: {
     connect: (state, action) => {
       state.isConnected = true;
-      state.account = action.payload;
+      state.account = action.payload.account;
     },
     disConnect: (state) => {
       state.isConnected = false;
@@ -19,7 +19,7 @@ export const accountSlice = createSlice({
     },
     setChain: (state, action) => {
       state.chain = action.payload
-    }
+    },
   },
 })
 
