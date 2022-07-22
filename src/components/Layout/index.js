@@ -2,10 +2,8 @@ import './style.css'
 
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux';
-import { ethers } from "ethers";
 
 import Header from '../Header'
-import { Link } from 'react-router-dom'
 import { connect, isConnected, setChain } from "../../store/accountReducer";
 
 const Layout = (props) => {
@@ -28,6 +26,7 @@ const Layout = (props) => {
 
   useEffect(()=>{
     connectMetamaskHandler();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   },[]);
 
   const connectWalletHandler = () => {}
@@ -65,7 +64,7 @@ const Layout = (props) => {
         </div>
       ) : null}
       <div className="homepage_background">
-        <img src="/stable/stableBg.svg" />
+        <img src="/stable/stableBg.svg" alt=''/>
       </div>
       <div className="header_part">
         <Header setConnectStatus={setConnectStatus} />

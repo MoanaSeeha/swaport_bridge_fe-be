@@ -1,12 +1,10 @@
 import './style.css'
 
-import React, { useEffect, useState } from 'react'
-import { BigNumber, ethers } from "ethers";
+import React, { useState } from 'react'
+import { ethers } from "ethers";
 import { useSelector } from 'react-redux';
 
 import { connectedAccount } from "../../store/accountReducer";
-import Header from '../../components/Header'
-import { Link, Route } from 'react-router-dom'
 import SelectSwap from '../../components/SelectSwap'
 import RouterABI from '../../abis/v2Router.json';
 import FactoryABI from '../../abis/v2Factory.json';
@@ -37,8 +35,6 @@ const Swap = () => {
   ];
   const weth_add = '0x532F25428465f9C684A1905F9A8aa93357B2048A';
   
-  const [connectStatus, setConnectStatus] = useState(false)
-  const [mobileStatus, setMobileStatus] = useState(false)
   const [transferStatus, setTransferStatus] = useState(false)
   const [open, setOpen] = useState(false)
   const [toOpen, setToOpen] = useState(false)
@@ -56,7 +52,6 @@ const Swap = () => {
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   const connected_account = useSelector(connectedAccount);
 
-  const[inputValueMode,setinputValueMode] = useState(false);
   const[reserves,setreserves] = useState(0);
   const setReceiveAmount = async (a, b) => {
     if(a === '0') a = weth_add;
@@ -218,34 +213,34 @@ const Swap = () => {
             const signer = provider.getSigner(connected_account);
             const Router = new ethers.Contract('0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a', RouterABI, signer);
 
-            let tokenNameA, tokenUnitsA, tokenbalance, tokenBalanceA, tokenSymbolA, tokenNameB, tokenUnitsB, tokenbalanceb, tokenBalanceB, tokenSymbolB;
+            let  tokenUnitsA;// tokenbalance,tokenNameB, tokenUnitsB, tokenbalanceb, tokenBalanceB, tokenSymbolB;
             if(selectedTokenInfo.A.address === '0') {
-              tokenNameA = 'DBX';
+              // tokenNameA = 'DBX';
               tokenUnitsA = 18;
-              tokenbalance = await provider.getBalance(connected_account);
-              tokenBalanceA = ethers.utils.formatEther(tokenbalance);
-              tokenSymbolA = 'DBX';
+              // tokenbalance = await provider.getBalance(connected_account);
+              // tokenBalanceA = ethers.utils.formatEther(tokenbalance);
+              // tokenSymbolA = 'DBX';
             } else {
               const token_A = new ethers.Contract(selectedTokenInfo.A.address, ERC20ABI, provider);
-              tokenNameA = await token_A.name();
+              // tokenNameA = await token_A.name();
               tokenUnitsA = await token_A.decimals();
-              tokenbalance = await token_A.balanceOf(connected_account);
-              tokenBalanceA = ethers.utils.formatUnits(tokenbalance, tokenUnitsA);
-              tokenSymbolA = await token_A.symbol();
+              // tokenbalance = await token_A.balanceOf(connected_account);
+              // tokenBalanceA = ethers.utils.formatUnits(tokenbalance, tokenUnitsA);
+              // tokenSymbolA = await token_A.symbol();
             } 
             if(selectedTokenInfo.B.address === '0') {
-              tokenNameB = 'DBX';
-              tokenUnitsB = 18;
-              tokenbalance = await provider.getBalance(connected_account);
-              tokenBalanceB = ethers.utils.formatEther(tokenbalance);
-              tokenSymbolB = 'DBX';
+              // tokenNameB = 'DBX';
+              // tokenUnitsB = 18;
+              // tokenbalance = await provider.getBalance(connected_account);
+              // tokenBalanceB = ethers.utils.formatEther(tokenbalance);
+              // tokenSymbolB = 'DBX';
             } else {
-              const token_B = new ethers.Contract(selectedTokenInfo.B.address, ERC20ABI, signer);
-              tokenNameB = await token_B.name();
-              tokenUnitsB = await token_B.decimals();
-              tokenbalanceb = await token_B.balanceOf(connected_account);
-              tokenBalanceB = ethers.utils.formatUnits(tokenbalanceb, tokenUnitsB);
-              tokenSymbolB = await token_B.symbol();
+              // const token_B = new ethers.Contract(selectedTokenInfo.B.address, ERC20ABI, signer);
+              // tokenNameB = await token_B.name();
+              // tokenUnitsB = await token_B.decimals();
+              // tokenbalanceb = await token_B.balanceOf(connected_account);
+              // tokenBalanceB = ethers.utils.formatUnits(tokenbalanceb, tokenUnitsB);
+              // tokenSymbolB = await token_B.symbol();
             }
 
             if(selectedTokenInfo.A.address === '0') {

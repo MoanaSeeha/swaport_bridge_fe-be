@@ -1,10 +1,8 @@
 import "./style.css";
 
 import React, { useEffect, useState } from "react";
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
 
-import Header from "../../components/Header";
-import { Link } from "react-router-dom";
 import SelectLiq from "../../components/SelectLiq";
 import { connectedAccount } from "../../store/accountReducer";
 
@@ -113,7 +111,6 @@ const Liquidity = () => {
     })
 
     opensettokenValue(true);
-    const router = new ethers.Contract('0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a', RouterABI, provider);
 
   };
 
@@ -184,7 +181,7 @@ const inputTokenValueModal = () => (
             {addLiqClick === true ? "Add" : "Your"} Liquidity
             {addLiqClick === true ? (
               <span style={{ marginLeft: "5px" }} onClick={help_handler}>
-                <img src="/coin/help.svg" />
+                <img src="/coin/help.svg" alt=""/>
                 {help === true ? (
                   <div
                     className="help_des"
@@ -332,7 +329,7 @@ const inputTokenValueModal = () => (
                   setImportStatus(false);
                 }}
               >
-                <img src="/stable/closeBtn.svg" />
+                <img src="/stable/closeBtn.svg" alt=""/>
               </div>
               <div className="import_header">Import Tokens</div>
               <div className="import_main">
@@ -388,7 +385,7 @@ const inputTokenValueModal = () => (
             {addLiqClick === true ? "Add" : "Your"} Liquidity
             {addLiqClick === true ? (
               <span style={{ marginLeft: "5px" }} onClick={help_handler}>
-                <img src="/coin/help.svg" />
+                <img src="/coin/help.svg" alt=""/>
                 {help === true ? (
                   <div
                     className="help_des"
@@ -432,7 +429,7 @@ const inputTokenValueModal = () => (
                 }} />
               </div>
               <div className="middle_icon">
-                <img src="/stable/closeBtn.svg" />
+                <img src="/stable/closeBtn.svg" alt=""/>
               </div>
               <div className="select_two">
                 <div className="lip_select_from_text">
@@ -459,7 +456,7 @@ const inputTokenValueModal = () => (
         ) : (
           <div className="add_liq">
             <div className="back_btn" onClick={backHandler}>
-              <img src="/coin/backarrow.svg" />
+              <img src="/coin/backarrow.svg" alt=""/>
               <div className="back_text">Back</div>
             </div>
             <div className="add_liq_btn" onClick={add_liquidity_handler}>

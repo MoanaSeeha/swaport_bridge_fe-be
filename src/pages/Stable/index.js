@@ -1,9 +1,7 @@
 import './style.css'
 
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
-import Header from '../../components/Header'
-import { Link } from 'react-router-dom'
 import SelectStable from '../../components/SelectStable'
 
 const Stable = () => {
@@ -47,15 +45,12 @@ const Stable = () => {
       coinIcon: '/coin/xus.svg',
     },
   ]
-  const [connectStatus, setConnectStatus] = useState(false)
-  const [mobileStatus, setMobileStatus] = useState(false)
   const [transferStatus, setTransferStatus] = useState(false)
   const transferHandler = () => {
     setTransferStatus(true)
     console.log('transferStatus')
   }
-  const connectMetamaskHandler = () => {}
-  const connectWalletHandler = () => {}
+
   return (
     <div className="stable_page">
       <div className="stable_content">

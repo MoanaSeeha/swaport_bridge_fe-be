@@ -8,6 +8,7 @@ const SelectSwap = ({ data, onChange, setOpen, open }) => {
 
   useEffect(() => {
     onChange(selectIndex)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectIndex])
   return (
     <div className={`select-form_swap ${open ? 'selected' : ''}`}>
@@ -25,9 +26,10 @@ const SelectSwap = ({ data, onChange, setOpen, open }) => {
             <span className="ChainText">{data[selectIndex].coinName}</span>
             <div className="arrow">
               {open === true ? (
-                <img src="/coin/arrow.svg" />
+                <img src="/coin/arrow.svg" alt=''/>
               ) : (
                 <img
+                alt=''
                   style={{ marginLeft: '5px' }}
                   src="/coin/reverseArrow.svg"
                 />

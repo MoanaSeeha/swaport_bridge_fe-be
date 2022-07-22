@@ -8,6 +8,7 @@ const SelectStable = ({ data, onChange }) => {
 
   useEffect(() => {
     onChange(selectIndex)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectIndex])
   return (
     <div className={`select-form ${open ? 'selected' : ''}`}>
@@ -25,6 +26,7 @@ const SelectStable = ({ data, onChange }) => {
             <span className="ChainText">{data[selectIndex].coinName}</span>
             <div className="arrow">
               <img
+                alt=''
                 src={`/coin/${
                   open === true ? 'arrow.svg' : 'reverseArrow.svg'
                 }`}

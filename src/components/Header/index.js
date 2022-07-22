@@ -69,7 +69,7 @@ const Header = (props) => {
                   setMobile(false)
                 }}
               >
-                <img src="/stable/whiteCloseBtn.svg" />
+                <img src="/stable/whiteCloseBtn.svg" alt=''/>
               </div>
               <div className="mobile_four_btn">
                 <div onClick={swapStatusHandler}>
@@ -185,7 +185,7 @@ const Header = (props) => {
             setMobile(true)
           }}
         >
-          <img src="/mobile/mobile_btn.svg" />
+          <img src="/mobile/mobile_btn.svg" alt=''/>
         </div>
       </div>
     </div>

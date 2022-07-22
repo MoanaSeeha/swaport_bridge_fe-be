@@ -1,9 +1,7 @@
 import './style.css'
 
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
-import Header from '../../components/Header'
-import { Link } from 'react-router-dom'
 import SelectBridge from '../../components/SelectBridge'
 
 const MainPage = () => {
@@ -48,15 +46,13 @@ const MainPage = () => {
       coinIcon: '/main/dbx.svg',
     },
   ]
-  const [connectStatus, setConnectStatus] = useState(false)
-  const [mobileStatus, setMobileStatus] = useState(false)
+
   const [transferStatus, setTransferStatus] = useState(false)
   const transferHandler = () => {
     setTransferStatus(true)
     console.log('transferStatus')
   }
-  const connectMetamaskHandler = () => {}
-  const connectWalletHandler = () => {}
+
   return (
     <div className="">
       <div className="stable_content">

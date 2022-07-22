@@ -8,6 +8,7 @@ const SelectBridge = ({ data, onChange }) => {
 
   useEffect(() => {
     onChange(selectIndex)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectIndex])
   return (
     <div className={`selectBridge-form ${open ? 'selected' : ''}`}>
@@ -28,6 +29,7 @@ const SelectBridge = ({ data, onChange }) => {
             {/* {`select-form ${open ? 'selected' : ''}`} */}
             <div className="arrow_bridge">
               <img
+              alt=''
                 src={`/coin/${
                   open === true ? 'arrow.svg' : 'reverseArrow.svg'
                 }`}
