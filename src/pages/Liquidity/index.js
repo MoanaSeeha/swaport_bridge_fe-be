@@ -18,19 +18,19 @@ const Liquidity = () => {
       chainName: "DBX",
       chainIcon: "/coin/xus.svg",
       coinIcon: "/coin/xus.svg",
-      address: '0x000'
+      address: '0'
     },
     {
       chainName: "USDT",
       chainIcon: "/coin/usdt.svg",
       coinIcon: "/coin/usdt.svg",
-      address: '0x234'
+      address: '0xbD790D62FCB1ee94Fe1A89ec155DCB7fb82d85FB'
     },
     {
-      chainName: "XUS",
+      chainName: "STKN",
       chainIcon: "/coin/usdc.svg",
       coinIcon: "/coin/usdc.svg",
-      address: '0x234'
+      address: '0x90c1eF1854ECbF69F418f7F0827D3E986Ad64b50'
     },
     {
       chainName: "Import",
@@ -45,7 +45,7 @@ const Liquidity = () => {
   const [addLiqClick, setAddLiqClick] = useState(false);
   const [settokenValue,opensettokenValue] = useState(false);
   const [help, setHelp] = useState(false);
-  const [tokenaddress,setTokenaddress] = useState({A:'', B:''});
+  const [tokenaddress,setTokenaddress] = useState({A:'0', B:'0'});
   const [tokenInfo,settokenInfo] = useState({
     A: {address: '', name: '', decimal: 18, symbol: '', balance: 0},
     B: {address: '', name: '', decimal: 18, symbol: '', balance: 0}
@@ -55,7 +55,6 @@ const Liquidity = () => {
   // const[tokenselect,settokenselect] = useState(false);
   const transferHandler = () => {
     setAddLiqClick(true);
-    console.log("transferStatus");
   };
   const backHandler = () => {
     setAddLiqClick(false);
@@ -66,24 +65,36 @@ const Liquidity = () => {
   const provider = new ethers.providers.Web3Provider(window.ethereum);
 
   const add_liquidity_handler = async () => {
-    const token_A = new ethers.Contract(tokenaddress.A, ERC20ABI, provider);
-    const token_B = new ethers.Contract(tokenaddress.B, ERC20ABI, provider);
-    console.log(tokenaddress.A);
-    let tokenNameA = await token_A.name();
-    console.log(tokenNameA);
-    let tokenUnitsA = await token_A.decimals();
-    console.log(tokenUnitsA, connected_account);
-    let tokenbalance = await token_A.balanceOf(connected_account);
-    console.log(tokenbalance);
-    let tokenBalanceA = ethers.utils.formatUnits(tokenbalance, tokenUnitsA);
-    console.log(tokenBalanceA);
-    let tokenSymbolA = await token_A.symbol();
-    console.log(tokenSymbolA);
-    let tokenNameB = await token_B.name();
-    let tokenUnitsB = await token_B.decimals();
-    let tokenbalanceb = await token_B.balanceOf(connected_account);
-    let tokenBalanceB = ethers.utils.formatUnits(tokenbalanceb, tokenUnitsB);
-    let tokenSymbolB = await token_B.symbol();
+    let tokenNameA, tokenUnitsA, tokenbalance, tokenBalanceA, tokenSymbolA, tokenNameB, tokenUnitsB, tokenbalanceb, tokenBalanceB, tokenSymbolB;
+      if(tokenaddress.A === '0') {
+        tokenNameA = 'DBX';
+        tokenUnitsA = 18;
+        tokenbalance = await provider.getBalance(connected_account);
+        tokenBalanceA = ethers.utils.formatEther(tokenbalance);
+        tokenSymbolA = 'DBX';
+      } else {
+        const token_A = new ethers.Contract(tokenaddress.A, ERC20ABI, provider);
+        tokenNameA = await token_A.name();
+        tokenUnitsA = await token_A.decimals();
+        tokenbalance = await token_A.balanceOf(connected_account);
+        tokenBalanceA = ethers.utils.formatUnits(tokenbalance, tokenUnitsA);
+        tokenSymbolA = await token_A.symbol();
+      } 
+      if(tokenaddress.B === '0') {
+        tokenNameB = 'DBX';
+        tokenUnitsB = 18;
+        tokenbalance = await provider.getBalance(connected_account);
+        tokenBalanceB = ethers.utils.formatEther(tokenbalance);
+        tokenSymbolB = 'DBX';
+      } else {
+        const token_B = new ethers.Contract(tokenaddress.B, ERC20ABI, provider);
+        tokenNameB = await token_B.name();
+        tokenUnitsB = await token_B.decimals();
+        tokenbalanceb = await token_B.balanceOf(connected_account);
+        tokenBalanceB = ethers.utils.formatUnits(tokenbalanceb, tokenUnitsB);
+        tokenSymbolB = await token_B.symbol();
+
+      }
     settokenInfo({
       A:{
         address: tokenaddress.A,
@@ -100,23 +111,17 @@ const Liquidity = () => {
         symbol: tokenSymbolB
       }
     })
-    console.log(tokenInfo);
 
     opensettokenValue(true);
-    // const token_A = new ethers.Contract(tokenaddress.A, ERC20ABI, provider);
-    // const token_B = new ethers.Contract(tokenaddress.B, ERC20ABI, provider);
-    // const router = new ethers.Contract('0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a', RouterABI, provider);
+    const router = new ethers.Contract('0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a', RouterABI, provider);
 
   };
-  const connectMetamaskHandler = () => {};
-  const connectWalletHandler = () => {};
+
   const [open, setOpen] = useState({A: false, B: false})
   const [selectIndex, setSelectIndex] = useState({A: 0, B: 0});
   const onChange = (e) =>{
-    console.log(e);
   }
   useEffect(() => {
-    console.log(new ethers.providers.Web3Provider(window.ethereum));
     onChange(selectIndex)
   }, [selectIndex])
 
@@ -214,24 +219,54 @@ const inputTokenValueModal = () => (
               
               const signer = provider.getSigner(connected_account);
               const router = new ethers.Contract('0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a', RouterABI, signer);
-              console.log(tokenValue.A, tokenValue.B);
-              const token_A = new ethers.Contract(tokenInfo.A.address, ERC20ABI, signer);
-              const token_B = new ethers.Contract(tokenInfo.B.address, ERC20ABI, signer);
-              // await token_A.approve('0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a', ethers.constants.MaxUint256);
-              // await token_B.approve('0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a', ethers.constants.MaxUint256);
-              // token_B.on('Approval',async (owner, spender, value) => {
-                // console.log(owner, spender, value, (tokenValue.A*10**tokenInfo.A.decimal).toString());
-                await router.addLiquidity(
-                  tokenInfo.A.address,
-                  tokenInfo.B.address,
-                  ethers.BigNumber.from(tokenValue.A).mul(ethers.BigNumber.from(10).pow(tokenInfo.A.decimal)),
-                  ethers.BigNumber.from(tokenValue.B).mul(ethers.BigNumber.from(10).pow(tokenInfo.B.decimal)),
-                  ethers.BigNumber.from(tokenValue.A).mul(ethers.BigNumber.from(10).pow(tokenInfo.A.decimal)),
-                  ethers.BigNumber.from(tokenValue.B).mul(ethers.BigNumber.from(10).pow(tokenInfo.B.decimal)),
-                  connected_account,
-                  ethers.constants.MaxUint256
-                )
-              // })  
+                if(tokenInfo.A.address === '0') {
+                  const token_B = new ethers.Contract(tokenInfo.B.address, ERC20ABI, signer);
+                  const options = {value: ethers.utils.parseEther(tokenValue.A.toString())}
+                  await token_B.approve('0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a', ethers.constants.MaxUint256);
+                  token_B.on('Approval',async (owner, spender, value) => {
+                    await router.addLiquidityETH(
+                      tokenInfo.B.address,
+                      ethers.BigNumber.from(tokenValue.B).mul(ethers.BigNumber.from(10).pow(tokenInfo.B.decimal)),
+                      ethers.BigNumber.from(tokenValue.B).mul(ethers.BigNumber.from(10).pow(tokenInfo.B.decimal)),
+                      ethers.utils.parseEther(tokenValue.A.toString()),
+                      connected_account,
+                      ethers.constants.MaxUint256,
+                      options);
+                  })
+                }
+                if(tokenInfo.B.address === '0') {
+                  const token_A = new ethers.Contract(tokenInfo.A.address, ERC20ABI, signer);
+                  await token_A.approve('0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a', ethers.constants.MaxUint256);
+                  const options = {value: ethers.utils.parseEther(tokenValue.B.toString())}
+                  token_A.on('Approval',async (owner, spender, value) => {
+                    await router.addLiquidityETH(
+                      tokenInfo.A.address,
+                      ethers.BigNumber.from(tokenValue.A).mul(ethers.BigNumber.from(10).pow(tokenInfo.A.decimal)),
+                      ethers.BigNumber.from(tokenValue.A).mul(ethers.BigNumber.from(10).pow(tokenInfo.A.decimal)),
+                      ethers.utils.parseEther(tokenValue.B.toString()),
+                      connected_account,
+                      ethers.constants.MaxUint256,
+                      options);
+                  })
+                }
+                if(tokenInfo.A.address !== '0' && tokenInfo.B.address !== '0' ) {
+                  const token_A = new ethers.Contract(tokenInfo.A.address, ERC20ABI, signer);
+                  const token_B = new ethers.Contract(tokenInfo.B.address, ERC20ABI, signer);
+                  await token_A.approve('0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a', ethers.constants.MaxUint256);
+                  await token_B.approve('0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a', ethers.constants.MaxUint256);
+                  token_B.on('Approval',async (owner, spender, value) => {
+                    await router.addLiquidity(
+                      tokenInfo.A.address,
+                      tokenInfo.B.address,
+                      ethers.BigNumber.from(tokenValue.A).mul(ethers.BigNumber.from(10).pow(tokenInfo.A.decimal)),
+                      ethers.BigNumber.from(tokenValue.B).mul(ethers.BigNumber.from(10).pow(tokenInfo.B.decimal)),
+                      ethers.BigNumber.from(tokenValue.A).mul(ethers.BigNumber.from(10).pow(tokenInfo.A.decimal)),
+                      ethers.BigNumber.from(tokenValue.B).mul(ethers.BigNumber.from(10).pow(tokenInfo.B.decimal)),
+                      connected_account,
+                      ethers.constants.MaxUint256
+                    )
+                  })
+                }
 
             }}>
               Supply
@@ -259,7 +294,7 @@ const inputTokenValueModal = () => (
               </div>
               <div className="liq_modal_text">
               <div className="import_token" style={{display: 'flex', alignItems: 'stretch', margin: '0 10px'}}>
-                <input type="text" placeholder="Import Token By Address"  onChange={e => setInputValue(e.target.value)} />
+                <input type="text" placeholder="Import Token By Address" onChange={e => setInputValue(e.target.value)} />
                 <div style={{
                   padding: '10px',
                   borderRadius: '10px',
@@ -322,7 +357,6 @@ const inputTokenValueModal = () => (
                     <span>I understand</span>
                   </div>
                   <div onClick={async () => {
-                    console.log(open)
                     // const router = new ethers.Contract('0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a', RouterABI, provider);
                     open.A?setTokenaddress({
                       A: inputValue,

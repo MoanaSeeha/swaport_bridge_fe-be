@@ -50,6 +50,7 @@ const SelectSwap = ({ data, onChange, setOpen, open }) => {
             (item, index) =>
               index !== selectIndex && (
                 <li
+                key={index}
                   onClick={() => {
                     setSelectIndex(index)
                     setOpen(false)
