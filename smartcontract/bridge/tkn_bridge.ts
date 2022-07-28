@@ -10,13 +10,16 @@ import TokenAbi from "./abis/Token.json";
 import BridgeAssist from "./abis/BridgeAssist.json";
 import BridgeAssistX from "./abis/BridgeAssistX.json";
 import walletPrivateKey from "./secret"; // controlling wallet privateKey
-const address_BABE = "0xE562014651C191178CA2Be7f86910760Ce957C7f";
-const address_BABX = "0x3A893beAC002c85CB6D85865C66093F420483FE2";
-const address_BAEB = "0x227996B1f17c5E8caB4Cc843124f0Cf6399d37D9";
-const address_BAEX = "0xd274515b94fAb45639136a5BFF74F704509680c7";
-const address_BAX = "0x547e9337C88ADFe32C2A9e5273F281b813FB085D";
-const address_TKNB = "0x67dcAa9468c219ad81F5825EF0c8f58879c657dd";
-const address_TKNE = "0x3cbc780d2934d55a06069e837fabd3e6fc23dab0";
+
+
+const address_BABE = "0xE66b3b435ef7Cf745200bB21469911C13b59795b";
+const address_BABX = "0xa31Bd8EFb32E509C9B8686cE9652c86C5331717d";
+const address_BAEB = "0x83C4f25d0B22031073BD876e2B3b7453646bC3a9";
+const address_BAEX = "0x4BaeA38A23C4D2Dd74678646Dc6D94d39f8CE49f";
+const address_BAX = "0xC31f86a4AB0c5964b4c1f3c5BeB42128A722638C";
+const address_TKNB = "0xE04BD4f6C98837B8430E1813e245683F30CEE7dA";
+const address_TKNE = "0x194bBdDC89D634e17c3ab4f2D09034936FB23eF7";
+
 const providerB = new providers.JsonRpcProvider("https://bsc-dataseed.binance.org/"); // for reading contracts
 const providerE = new providers.InfuraProvider(1, "976b8b2358be48468b36d8739e79414e"); // for reading contracts
 const providerX = new providers.JsonRpcProvider("https://dbxnode.com"); // for reading contracts

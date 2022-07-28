@@ -12,17 +12,17 @@ const StableAbi = require("./abis/USDT.json");
 const BridgeAssist = require("./abis/BridgeAssist.json");
 const BridgeAssistX = require("./abis/BridgeAssistX.json");
 const privatekey = "";
-const address_BABE = "0x6Ab775C3A7Db386acDFAF598968464B59e6b5095";
-const address_BABX = "0xe073900E8f456CecE1588071Cda54297008f5A44";
-const address_BAEB = "0x67412cA1Aa3DcA2194b6E843E3c790FF4fFa87e4";
-const address_BAEX = "0x7FdBe745ED1354248f9048A2C3051F4c11e29212";
-const address_BAX = "0x7E75E882285d1d5Eebd96e03e890b8014cf08ba8";
-const address_TKNB = "0x9caa60A2Ea0b767Dc2594579a17E69b644fA4104";
-const address_TKNE = "0xB8D7372ee6Ff64fE464376d8FFC519ee4997064C";
+const address_BABE = "0xE66b3b435ef7Cf745200bB21469911C13b59795b";
+const address_BABX = "0xa31Bd8EFb32E509C9B8686cE9652c86C5331717d";
+const address_BAEB = "0x83C4f25d0B22031073BD876e2B3b7453646bC3a9";
+const address_BAEX = "0x4BaeA38A23C4D2Dd74678646Dc6D94d39f8CE49f";
+const address_BAX = "0xC31f86a4AB0c5964b4c1f3c5BeB42128A722638C";
+const address_TKNB = "0xE04BD4f6C98837B8430E1813e245683F30CEE7dA";
+const address_TKNE = "0x194bBdDC89D634e17c3ab4f2D09034936FB23eF7";
 
-const address_USDT = "0xac6a28d4486F8Cd435B061F48a8abA7E427eE029"; // "0xdAC17F958D2ee523a2206206994597C13D831ec7";
-const address_USDC = "0xf0Ae6228BBf1423e0b55E6D9c74F167A155800B5"; // "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d";
-const address_XUS = "0xB8D7372ee6Ff64fE464376d8FFC519ee4997064C"; // "0x91efa3FC448b7FCD40880F3ef650eB99635e6143";
+const address_USDT = "0x272668504C618699486c766Cf5364C9A089b5284"; // "0xdAC17F958D2ee523a2206206994597C13D831ec7";
+const address_USDC = "0x5aE1a10943779fa6a9C31e9Ee65eaED6B0eC3917"; // "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d";
+const address_XUS = "0x759fCEf9B28A089575A99f1544ECB976722FCd18"; // "0x91efa3FC448b7FCD40880F3ef650eB99635e6143";
 
 const providerB = new ethers.providers.JsonRpcProvider("https://data-seed-prebsc-1-s1.binance.org:8545/"); // for reading contracts
 const providerE = new ethers.providers.InfuraProvider(3, "976b8b2358be48468b36d8739e79414e"); // for reading contracts
