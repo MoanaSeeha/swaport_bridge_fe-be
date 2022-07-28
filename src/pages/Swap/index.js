@@ -61,9 +61,7 @@ const Swap = () => {
   });
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   const connected_account = useSelector(connectedAccount);
-  console.log(connected_account === '');
   let signer = connected_account === ''?null:provider.getSigner(connected_account);
-  console.log('signer', signer, selectedTokenInfo);
   const[reserves,setreserves] = useState(0);
   const setReceiveAmount = async (a, b) => {
     if(a === '0') a = weth_add;
@@ -73,7 +71,6 @@ const Swap = () => {
         const signer = provider.getSigner(connected_account);
         const factory = new ethers.Contract('0xBa34d77fD403dd802510621e34C6Fa4238067aaa', FactoryABI, signer);
         let pairaddress = await factory.getPair(a, b);
-        console.log(pairaddress);
         if(pairaddress !== '0x0000000000000000000000000000000000000000') {
           const pair = new ethers.Contract(pairaddress, PairABI, signer);
           let reserves = await pair.getReserves();
@@ -93,7 +90,6 @@ const Swap = () => {
           }
         }
       } catch (error) {
-        console.log(error)
         alert('Insufficient Liquidity');
         return (0);
       }
@@ -102,7 +98,6 @@ const Swap = () => {
       return (0);
     }
   }
-  console.log(connected_account)
   return (
     <div className="">
       {connected_account === ''?<div>
@@ -164,15 +159,24 @@ const Swap = () => {
               path: selectedTokenInfo.path
             }) 
             setreserves(await setReceiveAmount(selectedTokenInfo.A.address, selectedTokenInfo.B.address));
-            
-          }}/>
+          }} value={selectedTokenInfo.A.amount}/>
           <div className="balance_text_swap">
             <span className="balance">Balance:</span>
             <span className="dbx">{selectedTokenInfo.A.data.balance + ' '+selectedTokenInfo.A.data.symbol}</span>
           </div>
           <div className="max_text_swap">
-            <span className="max_number">00.00</span>{' '}
-            <span className="max_color">MAX</span>
+            {/* <span className="max_number">00.00</span>{' '} */}
+            <span className="max_color" style={{cursor: 'pointer'}} onClick={() => {
+              setselectedTokenInfo({
+                B:selectedTokenInfo.B,
+                A:{
+                  address:selectedTokenInfo.A.address,
+                  amount:Number(selectedTokenInfo.A.data.balance),
+                  data: selectedTokenInfo.A.data
+                },
+                path: selectedTokenInfo.path
+              }) 
+            }}>MAX</span>
           </div>
 
           <div className="select_coin">
@@ -238,8 +242,8 @@ const Swap = () => {
             <span className="dbx">{selectedTokenInfo.B.data.balance + ' '+selectedTokenInfo.B.data.symbol}</span>
           </div>{' '}
           <div className="max_text_swap">
-            <span className="max_number">00.00</span>{' '}
-            <span className="max_color">MAX</span>
+            {/* <span className="max_number">00.00</span>{' '} */}
+            {/* <span className="max_color">MAX</span> */}
           </div>
           <div className="select_coin">
             <SelectSwap
