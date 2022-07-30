@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { ethers } from "ethers";
 import { useSelector } from 'react-redux';
 
-import { connectedAccount } from "../../store/accountReducer";
+import { connectedAccount, connectedChain } from "../../store/accountReducer";
 import SelectSwap from '../../components/SelectSwap'
 import RouterABI from '../../abis/v2Router.json';
 import FactoryABI from '../../abis/v2Factory.json';
@@ -60,7 +60,9 @@ const Swap = () => {
     path: ['0xd02F9F362d147Ee8F66BdfAfafa5Fa073cad67d5', '0xbD790D62FCB1ee94Fe1A89ec155DCB7fb82d85FB']
   });
   const provider = new ethers.providers.Web3Provider(window.ethereum);
+  // const dispatch = useDispatch();
   const connected_account = useSelector(connectedAccount);
+  const connected_chain = useSelector(connectedChain);
   let signer = connected_account === ''?null:provider.getSigner(connected_account);
   const[reserves,setreserves] = useState(0);
   const setReceiveAmount = async (a, b) => {
@@ -98,10 +100,33 @@ const Swap = () => {
       return (0);
     }
   }
+  console.log( connected_chain )
+  // const changeChain = async () => {
+  //   await window.ethereum
+  //     .request({
+  //       method: "wallet_switchEthereumChain",
+  //       params: [{ chainId: `48366` }],
+  //     }).then(() => dispatch(setChain('48366')))
+  // }
+
+  // useEffect(()=>{
+  //   if(connected_chain !== '48366') {
+  //     console.log('sdfsdfsdfsdf', connected_chain)
+  //     changeChain();
+  //   }
+  // },[]);
+
   return (
     <div className="">
-      {connected_account === ''?<div>
-        Connect Wallet First
+      {connected_account === '' || connected_chain !== '48366'?<div style={{
+            padding: '20px',
+            fontSize: '30px',
+            color: 'white',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+      }}>
+        Connect Wallet First and Switch to DBX chain
       </div>:
         (<div className="swap_content">
         {transferStatus === true ? (
@@ -183,16 +208,16 @@ const Swap = () => {
             <SelectSwap
               data={tokens_data}
               onChange={async (e) => {
-                let  tokenUnitsA, tokenbalance,tokenBalanceA, tokenSymbolA, tokenNameA;
+                let  tokenUnitsA, tokenbalance,tokenBalanceA, tokenSymbolA;
                 if(tokens_data[e].address === '0') {
-                  tokenNameA = 'DBX';
+                  // tokenNameA = 'DBX';
                   tokenUnitsA = 18;
                   tokenbalance = await provider.getBalance(connected_account);
                   tokenBalanceA = ethers.utils.formatEther(tokenbalance);
                   tokenSymbolA = 'DBX';
                 } else {
                   const token_A = new ethers.Contract(tokens_data[e].address, ERC20ABI, provider);
-                  tokenNameA = await token_A.name();
+                  // tokenNameA = await token_A.name();
                   tokenUnitsA = await token_A.decimals();
                   tokenbalance = await token_A.balanceOf(connected_account);
                   tokenBalanceA = ethers.utils.formatUnits(tokenbalance, tokenUnitsA);
@@ -249,16 +274,16 @@ const Swap = () => {
             <SelectSwap
               data={tokens_data}
               onChange={async (e) => {
-                let  tokenUnitsA, tokenbalance,tokenNameB, tokenUnitsB, tokenbalanceb, tokenBalanceB, tokenSymbolB;
+                let tokenbalance, tokenUnitsB, tokenbalanceb, tokenBalanceB, tokenSymbolB;
                 if(tokens_data[e].address === '0') {
-                  tokenNameB = 'DBX';
+                  // tokenNameB = 'DBX';
                   tokenUnitsB = 18;
                   tokenbalance = await provider.getBalance(connected_account);
                   tokenBalanceB = ethers.utils.formatEther(tokenbalance);
                   tokenSymbolB = 'DBX';
                 } else {
-                  const token_B = new ethers.Contract(tokens_data[e].address, ERC20ABI, signer);
-                  tokenNameB = await token_B.name();
+                  const token_B = new ethers.Contract(tokens_data[e].address, ERC20ABI, provider);
+                  // tokenNameB = await token_B.name();
                   tokenUnitsB = await token_B.decimals();
                   tokenbalanceb = await token_B.balanceOf(connected_account);
                   tokenBalanceB = ethers.utils.formatUnits(tokenbalanceb, tokenUnitsB);
@@ -302,7 +327,9 @@ const Swap = () => {
             } 
             if(selectedTokenInfo.B.address === '0') {
               const token_A = new ethers.Contract(selectedTokenInfo.A.address, ERC20ABI, signer);
-              await token_A.approve('0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a', ethers.constants.MaxUint256);
+              let a = await token_A.allowance( connected_account, '0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a');
+              if(a <= ethers.BigNumber.from(selectedTokenInfo.A.amount))
+                await token_A.approve('0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a', ethers.constants.MaxUint256);
               token_A.on('Approval',async (owner, spender, value) => {
                 await Router.swapExactTokensForETH(
                   ethers.BigNumber.from(selectedTokenInfo.A.amount).mul(ethers.BigNumber.from(10).pow(selectedTokenInfo.A.data.unit)),
@@ -315,9 +342,13 @@ const Swap = () => {
             }
             if(selectedTokenInfo.A.address !== '0' && selectedTokenInfo.B.address !== '0') {
               const token_A = new ethers.Contract(selectedTokenInfo.A.address, ERC20ABI, signer);
-              await token_A.approve('0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a', ethers.constants.MaxUint256);
+              let a = await token_A.allowance( connected_account, '0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a');
+              if(a <= ethers.BigNumber.from(selectedTokenInfo.A.amount))
+                await token_A.approve('0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a', ethers.constants.MaxUint256);
               const token_B = new ethers.Contract(selectedTokenInfo.B.address, ERC20ABI, signer);
-              await token_B.approve('0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a', ethers.constants.MaxUint256);
+              let b = await token_B.allowance( connected_account, '0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a');
+              if(b <= ethers.BigNumber.from(selectedTokenInfo.B.amount))
+                await token_B.approve('0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a', ethers.constants.MaxUint256);
               token_B.on('Approval',async (owner, spender, value) => {
                 await Router.swapExactTokensForTokens(
                   ethers.BigNumber.from(selectedTokenInfo.A.amount).mul(ethers.BigNumber.from(10).pow(selectedTokenInfo.A.data.unit)),

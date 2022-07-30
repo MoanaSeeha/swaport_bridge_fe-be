@@ -14,7 +14,7 @@ const Layout = (props) => {
   const connectMetamaskHandler = async () => {
     if(!is_Connected) {
       await window.ethereum.send("eth_requestAccounts");
-      dispatch(setChain(Number(window.ethereum?.networkVersion)));
+      dispatch(setChain(window.ethereum?.networkVersion));
       await window.ethereum.request({
         method: "wallet_requestPermissions",
         params: [{ eth_accounts: {}}]

@@ -49,6 +49,7 @@ const SelectStable = ({ data, onChange }) => {
             (item, index) =>
               index !== selectIndex && (
                 <li
+                  key={index}
                   onClick={() => {
                     setSelectIndex(index)
                     setOpen(false)

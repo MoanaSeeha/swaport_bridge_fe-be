@@ -1,9 +1,11 @@
 import './style.css'
 
 import React, { useState } from 'react'
+import axios from 'axios';
 
 import SelectStable from '../../components/SelectStable'
 
+const url = 'http://172.31.20.252:3002/info/';
 const Stable = () => {
   const from_data = [
     {
@@ -25,36 +27,26 @@ const Stable = () => {
       coinIcon: '/coin/xus.svg',
     },
   ]
-  const to_data = [
-    {
-      chainName: 'USDC',
-      chainIcon: '/coin/usdc.svg',
-      coinName: 'BNB',
-      coinIcon: '/coin/usdc.svg',
-    },
-    {
-      chainName: 'USDT',
-      chainIcon: '/coin/usdt.svg',
-      coinName: 'ETH',
-      coinIcon: '/coin/usdt.svg',
-    },
-    {
-      chainName: 'XUS',
-      chainIcon: '/coin/xus.svg',
-      coinName: 'DBX',
-      coinIcon: '/coin/xus.svg',
-    },
-  ]
-  const [transferStatus, setTransferStatus] = useState(false)
-  const transferHandler = () => {
-    setTransferStatus(true)
+  // const [transferStatus, setTransferStatus] = useState(false)
+  const[selectedIndex,selectIndex] = useState({
+    A:0,B:0
+  });
+  const[amount,setAmount] = useState({
+    A: 0,
+    B: 0
+  });
+  const transferHandler = async () => {
+    // setTransferStatus(true)
     console.log('transferStatus')
+    if(selectedIndex.A !== selectedIndex.B) {
+      console.log(await axios.get(url));
+    }
   }
 
   return (
     <div className="stable_page">
       <div className="stable_content">
-        {transferStatus === true ? (
+        {/* {transferStatus === true ? (
           <div className="transfer_modal">
             <div className="transfer_modal_layout">
               <div
@@ -90,7 +82,7 @@ const Stable = () => {
               </div>
             </div>
           </div>
-        ) : null}
+        ) : null} */}
         {/* From */}
         <div className="from_text">From</div>
         <div className="select_input">
@@ -105,7 +97,9 @@ const Stable = () => {
           </div>
 
           <div className="select_coin">
-            <SelectStable data={from_data} onChange={() => {}} />
+            <SelectStable data={from_data} onChange={(e) => {
+              selectIndex({A:e,B:selectedIndex.B})
+            }} />
           </div>
         </div>
         {/* TO  */}
@@ -121,7 +115,9 @@ const Stable = () => {
             <span className="max_color">MAX</span>
           </div>
           <div className="select_coin">
-            <SelectStable data={to_data} onChange={() => {}} />
+            <SelectStable data={from_data} onChange={(e) => {
+              selectIndex({B:e,A:selectedIndex.A})
+            }} />
           </div>
         </div>
         {/* Transfer */}

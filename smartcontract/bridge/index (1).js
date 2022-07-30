@@ -9,8 +9,8 @@ const cookieParser = require('cookie-parser');
 
 const TokenAbi = require("./abis/rink_DBX.json");
 const StableAbi = require("./abis/rink_USDT.json");
-const BridgeAssist = require("./abis/rink_Bridge.json.json");
-const BridgeAssistX = require("./abis/DBX_Bridge.json.json");
+const BridgeAssist = require("./abis/rink_Bridge.json");
+const BridgeAssistX = require("./abis/DBX_Bridge.json");
 const privatekey = "6a4e54a2855eab28d5251dd2bbbf4f1dfc6fe36a304398436cdae2fe046aa7a8";
 const address_BABE = "0xE66b3b435ef7Cf745200bB21469911C13b59795b";
 const address_BABX = "0xa31Bd8EFb32E509C9B8686cE9652c86C5331717d";
@@ -30,17 +30,17 @@ const providerX = new ethers.providers.JsonRpcProvider("https://rpc.dbx-testnet.
 const signerB = new ethers.Wallet(privatekey, providerB);
 const signerE = new ethers.Wallet(privatekey, providerE);
 const signerX = new ethers.Wallet(privatekey, providerX);
-const BABE = new ethers.Contract(address_BABE, BridgeAssist.abi, providerB);
-const BABX = new ethers.Contract(address_BABX, BridgeAssist.abi, providerB);
-const BAEB = new ethers.Contract(address_BAEB, BridgeAssist.abi, providerE);
-const BAEX = new ethers.Contract(address_BAEX, BridgeAssist.abi, providerE);
-const BAX = new ethers.Contract(address_BAX, BridgeAssistX.abi, providerX);
-const TKNB = new ethers.Contract(address_TKNB, TokenAbi.abi, providerB);
-const TKNE = new ethers.Contract(address_TKNE, TokenAbi.abi, providerE);
+const BABE = new ethers.Contract(address_BABE, BridgeAssist, providerB);
+const BABX = new ethers.Contract(address_BABX, BridgeAssist, providerB);
+const BAEB = new ethers.Contract(address_BAEB, BridgeAssist, providerE);
+const BAEX = new ethers.Contract(address_BAEX, BridgeAssist, providerE);
+const BAX = new ethers.Contract(address_BAX, BridgeAssistX, providerX);
+const TKNB = new ethers.Contract(address_TKNB, TokenAbi, providerB);
+const TKNE = new ethers.Contract(address_TKNE, TokenAbi, providerE);
 
-const USDT = new ethers.Contract(address_USDT, StableAbi.abi, providerE);
-const USDC = new ethers.Contract(address_USDC, StableAbi.abi, providerB);
-const XUS = new ethers.Contract(address_XUS, StableAbi.abi, providerX);
+const USDT = new ethers.Contract(address_USDT, StableAbi, providerE);
+const USDC = new ethers.Contract(address_USDC, StableAbi, providerB);
+const XUS = new ethers.Contract(address_XUS, StableAbi, providerX);
 
 const latestNonces = { B: 0, E: 0, X: 0 };
 // queues and buffer lifetime
@@ -597,7 +597,7 @@ function haltOnTimedout (req, res, next) {
 }
 
 app.get("/process", async (req, res) => {
-  res.set('Access-Control-Allow-Origin', '*');
+  //res.set('Access-Control-Allow-Origin', '*');
   const direction = typeof req.query.direction === "string" ? (req.query.direction.toUpperCase() ) : undefined;
   const address = typeof req.query.address === "string" ? (req.query.address).toLowerCase() : undefined;
   const coinDirection = typeof req.query.coinDirection === "string" ? (req.query.coinDirection.toUpperCase() ): undefined ;
@@ -641,9 +641,13 @@ app.get("/process", async (req, res) => {
     }
   }
 });
+app.all("*", (req, res, next) => {
+  console.log('sdfsdfsdfsdfsdfsdfsdfsdf'); // do anything you want here
+  next();
+});
 app.get("/info", async (req, res) => {
     console.log("received request...")
-    res.set('Access-Control-Allow-Origin', '*');
+    //res.set('Access-Control-Allow-Origin', '*');
     
     try {
       const BES = await estimateFee("BE", "SS");
@@ -714,7 +718,7 @@ app.get("/hardresetnonces", async (req, res) => {
   }
 });
 
-const port = process.env.PORT || 443;
+const port = process.env.PORT || 3002;
 
 app.listen(port, async () => {
   latestNonces.B = (await signerB.getTransactionCount()) - 1;

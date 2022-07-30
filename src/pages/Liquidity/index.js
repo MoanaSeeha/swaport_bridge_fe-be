@@ -219,6 +219,8 @@ const inputTokenValueModal = () => (
                 if(tokenInfo.A.address === '0') {
                   const token_B = new ethers.Contract(tokenInfo.B.address, ERC20ABI, signer);
                   const options = {value: ethers.utils.parseEther(tokenValue.A.toString())}
+                  let a = await token_B.allowance( connected_account, '0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a');
+                    if(a <= ethers.BigNumber.from(tokenValue.B))
                   await token_B.approve('0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a', ethers.constants.MaxUint256);
                   token_B.on('Approval',async (owner, spender, value) => {
                     await router.addLiquidityETH(
@@ -233,7 +235,9 @@ const inputTokenValueModal = () => (
                 }
                 if(tokenInfo.B.address === '0') {
                   const token_A = new ethers.Contract(tokenInfo.A.address, ERC20ABI, signer);
-                  await token_A.approve('0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a', ethers.constants.MaxUint256);
+                  let a = await token_A.allowance( connected_account, '0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a');
+                  if(a <= ethers.BigNumber.from(tokenValue.A))
+                    await token_A.approve('0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a', ethers.constants.MaxUint256);
                   const options = {value: ethers.utils.parseEther(tokenValue.B.toString())}
                   token_A.on('Approval',async (owner, spender, value) => {
                     await router.addLiquidityETH(
@@ -249,8 +253,12 @@ const inputTokenValueModal = () => (
                 if(tokenInfo.A.address !== '0' && tokenInfo.B.address !== '0' ) {
                   const token_A = new ethers.Contract(tokenInfo.A.address, ERC20ABI, signer);
                   const token_B = new ethers.Contract(tokenInfo.B.address, ERC20ABI, signer);
-                  await token_A.approve('0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a', ethers.constants.MaxUint256);
-                  await token_B.approve('0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a', ethers.constants.MaxUint256);
+                  let a = await token_A.allowance( connected_account, '0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a');
+                  if(a <= ethers.BigNumber.from(tokenValue.A))
+                    await token_A.approve('0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a', ethers.constants.MaxUint256);
+                  let b = await token_B.allowance( connected_account, '0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a');
+                  if(b <= ethers.BigNumber.from(tokenValue.B))
+                    await token_B.approve('0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a', ethers.constants.MaxUint256);
                   token_B.on('Approval',async (owner, spender, value) => {
                     await router.addLiquidity(
                       tokenInfo.A.address,
