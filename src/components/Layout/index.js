@@ -22,12 +22,28 @@ const Layout = (props) => {
       const accounts = await window.ethereum.request({ method: 'eth_accounts' });
       if (accounts[0]) dispatch(connect({account: accounts[0]}))
     }
+    else {
+      dispatch(setChain(window.ethereum?.networkVersion));
+      const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+      if (accounts[0]) dispatch(connect({account: accounts[0]}))
+    }
   }
 
   useEffect(()=>{
     connectMetamaskHandler();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[]);
+
+  useEffect(() => {
+    if (window.ethereum) {
+      window.ethereum.on("chainChanged", () => {
+        connectMetamaskHandler();
+      });
+      window.ethereum.on("accountsChanged", () => {
+        connectMetamaskHandler();
+      });
+    }
+  });
 
   const connectWalletHandler = () => {}
   return (
