@@ -1,5 +1,4 @@
-{
-  "abi": [
+ [
     {
       "constant": true,
       "inputs": [{ "name": "", "type": "address" }],
@@ -118,4 +117,3 @@
       "type": "function"
     }
   ]
-}
