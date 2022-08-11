@@ -38,6 +38,10 @@ const Swap = () => {
   const [transferStatus, setTransferStatus] = useState(false)
   const [open, setOpen] = useState(false)
   const [toOpen, setToOpen] = useState(false)
+  const[selectedTokenId,selectTokenId] = useState({
+    A: 0,
+    B: 1
+  });
   const [selectedTokenInfo,setselectedTokenInfo] = useState({
     A: {
       address:'0x90c1eF1854ECbF69F418f7F0827D3E986Ad64b50',
@@ -46,10 +50,10 @@ const Swap = () => {
         symbol: '',
         balance: 0,
         unit: 18
-      }
+      },
     },
     B: {
-      address:'0x90c1eF1854ECbF69F418f7F0827D3E986Ad64b50',
+      address:'0xbD790D62FCB1ee94Fe1A89ec155DCB7fb82d85FB',
       amount:0,
       data:{
         symbol: '',
@@ -57,7 +61,7 @@ const Swap = () => {
         unit: 18
       }
     },
-    path: ['0xd02F9F362d147Ee8F66BdfAfafa5Fa073cad67d5', '0xbD790D62FCB1ee94Fe1A89ec155DCB7fb82d85FB']
+    // path: ['0xd02F9F362d147Ee8F66BdfAfafa5Fa073cad67d5', '0xbD790D62FCB1ee94Fe1A89ec155DCB7fb82d85FB']
   });
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   // const dispatch = useDispatch();
@@ -181,7 +185,7 @@ const Swap = () => {
                 amount:Number(e.target.value),
                 data: selectedTokenInfo.A.data
               },
-              path: selectedTokenInfo.path
+              // path: selectedTokenInfo.path
             }) 
             setreserves(await setReceiveAmount(selectedTokenInfo.A.address, selectedTokenInfo.B.address));
           }} value={selectedTokenInfo.A.amount}/>
@@ -199,7 +203,7 @@ const Swap = () => {
                   amount:Number(selectedTokenInfo.A.data.balance),
                   data: selectedTokenInfo.A.data
                 },
-                path: selectedTokenInfo.path
+                // path: selectedTokenInfo.path
               }) 
             }}>MAX</span>
           </div>
@@ -207,7 +211,11 @@ const Swap = () => {
           <div className="select_coin">
             <SelectSwap
               data={tokens_data}
+              neighbourId={selectedTokenId.B}
               onChange={async (e) => {
+                selectTokenId({
+                  A: e, B:selectedTokenId.B
+                })
                 let  tokenUnitsA, tokenbalance,tokenBalanceA, tokenSymbolA;
                 if(tokens_data[e].address === '0') {
                   // tokenNameA = 'DBX';
@@ -235,7 +243,7 @@ const Swap = () => {
                       balance:tokenBalanceA
                     }
                   },
-                  path: selectedTokenInfo.path
+                  // path: selectedTokenInfo.path
                 }) 
                 setreserves( await setReceiveAmount(tokens_data[e].address, selectedTokenInfo.B.address));
               }}
@@ -273,7 +281,11 @@ const Swap = () => {
           <div className="select_coin">
             <SelectSwap
               data={tokens_data}
+              neighbourId={selectedTokenId.A}
               onChange={async (e) => {
+                selectTokenId({
+                  B: e, A:selectedTokenId.A
+                })
                 let tokenbalance, tokenUnitsB, tokenbalanceb, tokenBalanceB, tokenSymbolB;
                 if(tokens_data[e].address === '0') {
                   // tokenNameB = 'DBX';
@@ -301,7 +313,7 @@ const Swap = () => {
                       balance:tokenBalanceB
                     }
                   },
-                  path: selectedTokenInfo.path
+                  // path: selectedTokenInfo.path
                 }) 
                 setreserves(await setReceiveAmount(selectedTokenInfo.A.address, tokens_data[e].address));
               }}

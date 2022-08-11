@@ -21,6 +21,7 @@ const Layout = (props) => {
       });
       const accounts = await window.ethereum.request({ method: 'eth_accounts' });
       if (accounts[0]) dispatch(connect({account: accounts[0]}))
+      setConnectStatus(false)
     }
     else {
       dispatch(setChain(window.ethereum?.networkVersion));

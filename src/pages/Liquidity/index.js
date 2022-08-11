@@ -326,8 +326,6 @@ const inputTokenValueModal = () => (
           </div>
         ) : null}
       <div className="liq_main">
-                ___{tokenaddress.A}
-                +++{tokenaddress.B}
         {importStatus === true ? (
           <div className="import_modal" style={{zIndex: 150}}>
             <div className="import_content">

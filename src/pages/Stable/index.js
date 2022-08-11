@@ -42,7 +42,7 @@ const Stable = () => {
   ]
   // const [transferStatus, setTransferStatus] = useState(false)
   const[selectedIndex,selectIndex] = useState({
-    A:0,B:0
+    A:0,B:1
   });
   const[amount,setAmount] = useState({
     A: 0,
@@ -185,7 +185,7 @@ const Stable = () => {
           </div>
 
           <div className="select_coin">
-            <SelectStable data={from_data} onChange={(e) => {
+            <SelectStable data={from_data} neighbourId={selectedIndex.B} onChange={(e) => {
               selectIndex({A:e,B:selectedIndex.B})
             }} />
           </div>
@@ -203,7 +203,7 @@ const Stable = () => {
             <span className="max_color">MAX</span>
           </div>
           <div className="select_coin">
-            <SelectStable data={from_data} onChange={(e) => {
+            <SelectStable data={from_data} neighbourId={selectedIndex.A} onChange={(e) => {
               selectIndex({B:e,A:selectedIndex.A})
             }} />
           </div>

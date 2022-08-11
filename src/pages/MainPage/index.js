@@ -119,7 +119,6 @@ const MainPage = () => {
 
               } else {
                 let unit = await token.decimals();
-                console.log('aaaaaaaa')
                 let a = await token.allowance( connected_account, bridge_address);
                 await token.approve(bridge_address, ethers.BigNumber.from(amount.A).mul(ethers.BigNumber.from(10).pow(unit)) - a);
                 token.on('Approval',async (owner, spender, value) => {
@@ -147,7 +146,7 @@ const MainPage = () => {
     }
   }
   const[selectedIndex,selectIndex] = useState({
-    A:0,B:0
+    A:0,B:1
   });
   const[amount,setAmount] = useState({
     A: 0,
@@ -208,7 +207,7 @@ const MainPage = () => {
           </div>
 
           <div className="select_coin">
-            <SelectBridge data={from_data} onChange={(e) => {
+            <SelectBridge data={from_data} neighbourId={selectedIndex.B} onChange={(e) => {
               selectIndex({A:e,B:selectedIndex.B})
             }} />
           </div>
@@ -216,7 +215,7 @@ const MainPage = () => {
         {/* TO  */}
         <div className="to_text">To</div>
         <div className="select_input">
-          <input type="text" />
+          <input type="text" value={'~'+(amount.A-amount.A/100*2)}/>
           <div className="balance_text">
             <span className="balance">Balance:</span>{' '}
             <span className="dbx">{} DBX</span>
@@ -226,7 +225,7 @@ const MainPage = () => {
             <span className="max_color">MAX</span>
           </div>
           <div className="select_coin">
-            <SelectBridge data={from_data} onChange={(e) => {
+            <SelectBridge data={from_data} neighbourId={selectedIndex.A} onChange={(e) => {
               selectIndex({B:e,A:selectedIndex.A})
             }} />
           </div>

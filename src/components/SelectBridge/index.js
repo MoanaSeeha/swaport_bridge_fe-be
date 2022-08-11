@@ -2,9 +2,9 @@ import './styleBridge.css'
 
 import React, { useEffect, useState } from 'react'
 
-const SelectBridge = ({ data, onChange }) => {
+const SelectBridge = ({ data, onChange, neighbourId }) => {
   const [open, setOpen] = useState(false)
-  const [selectIndex, setSelectIndex] = useState(0)
+  const [selectIndex, setSelectIndex] = useState(neighbourId === 0?1:0)
 
   useEffect(() => {
     onChange(selectIndex)
@@ -45,7 +45,7 @@ const SelectBridge = ({ data, onChange }) => {
               index !== selectIndex && (
                 <li
                   onClick={() => {
-                    setSelectIndex(index)
+                    if(neighbourId !== index) setSelectIndex(index)
                     setOpen(false)
                   }}
                 >
