@@ -3,6 +3,7 @@ import './style.css'
 import React, { useState } from 'react'
 import { ethers } from "ethers";
 import { useSelector } from 'react-redux';
+import { ToastContainer, toast } from 'react-toastify';
 
 import { connectedAccount, connectedChain } from "../../store/accountReducer";
 import SelectSwap from '../../components/SelectSwap'
@@ -91,12 +92,28 @@ const Swap = () => {
             return a_w/b_w;
           }
           else {
-            alert('Insufficient Liquidity');
+            toast.error("Insufficient Liquidity", {
+              position: "top-right",
+              autoClose: 2000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: false,
+              draggable: true,
+              progress: 0,
+            })
             return (0);
           }
         }
       } catch (error) {
-        alert('Insufficient Liquidity');
+        toast.error("Insufficient Liquidity", {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: 0,
+        })
         return (0);
       }
     }
@@ -122,6 +139,7 @@ const Swap = () => {
 
   return (
     <div className="">
+      <ToastContainer />
       {connected_account === '' || connected_chain !== '48366'?<div style={{
             padding: '20px',
             fontSize: '30px',

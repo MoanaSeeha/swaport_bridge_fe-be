@@ -1,6 +1,7 @@
 import './App.css'
 
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import 'react-toastify/dist/ReactToastify.css';
 
 import Layout from './components/Layout'
 import Liquidity from './pages/Liquidity'

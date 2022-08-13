@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { ethers } from 'ethers';
+import { ToastContainer, toast } from 'react-toastify';
 
 import { connectedAccount, connectedChain } from "../../store/accountReducer";
 import SelectStable from '../../components/SelectStable'
@@ -122,17 +123,34 @@ const Stable = () => {
             //     setPendingStatus(false)
             // }     
           }
-          else  { alert('Input Amount to Transfer'); return;};
+          else  { toast.error("Input Amount to Transfer", {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            progress: 0,
+          }); return;};
         }
       } 
     }else {
-      alert('Switch Network to' + from_data[selectedIndex.A].coinName);
+      toast.error("Switch Network to " + from_data[selectedIndex.A].coinName, {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: 0,
+      })
     }
   }
   
 
   return (
     <div className="stable_page">
+      <ToastContainer />
       <div className="stable_content">
         {/* {transferStatus === true ? (
           <div className="transfer_modal">

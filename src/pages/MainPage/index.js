@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { ethers } from 'ethers';
+import { ToastContainer, toast } from 'react-toastify';
 
 import { connectedAccount, connectedChain } from "../../store/accountReducer";
 import ERC20ABI from '../../abis/ERC20.json';
@@ -13,11 +14,12 @@ import SelectBridge from '../../components/SelectBridge'
 const url = 'https://dbxbridge.uc.r.appspot.com/process';
 
 const MainPage = () => {
+
   const from_data = [
     {
       chainName: 'Ethereum',
       chainIcon: '/main/ethereum.svg',
-      // coinName: 'ETH',
+      coinName: 'ETH',
       coinIcon: '/main/ethereum.svg',
       address: '0x3cbc780d2934d55a06069e837fabd3e6fc23dab0',
       bridge: ['0x227996B1f17c5E8caB4Cc843124f0Cf6399d37D9', '0xd274515b94fAb45639136a5BFF74F704509680c7'],
@@ -27,7 +29,7 @@ const MainPage = () => {
     {
       chainName: 'Binance Smart Chain',
       chainIcon: '/main/binance.svg',
-      // coinName: 'BSC',
+      coinName: 'BSC',
       coinIcon: '/main/binance.svg',
       address: '0x67dcAa9468c219ad81F5825EF0c8f58879c657dd',
       bridge: ['0xE562014651C191178CA2Be7f86910760Ce957C7f', '0x3A893beAC002c85CB6D85865C66093F420483FE2'],
@@ -37,7 +39,7 @@ const MainPage = () => {
     {
       chainName: 'DBX Smart Network',
       chainIcon: '/main/dbx.svg',
-      // coinName: 'DBX',
+      coinName: 'DBX',
       coinIcon: '/main/dbx.svg',
       address: '0x759fCEf9B28A089575A99f1544ECB976722FCd18',
       bridge: ['0x547e9337C88ADFe32C2A9e5273F281b813FB085D'],
@@ -138,11 +140,28 @@ const MainPage = () => {
             //     setPendingStatus(false)
             // }     
           }
-          else  { alert('Input Amount to Transfer'); return;};
+          else  { toast.error("Input Amount to Transfer", {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            progress: 0,
+          }); return;};
         // }
       } 
     }else {
-      alert('Switch Network to' + from_data[selectedIndex.A].coinName);
+      toast.error("Switch Network to " + from_data[selectedIndex.A].coinName, {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: 0,
+      })
+      // alert('Switch Network to' + from_data[selectedIndex.A].coinName);
     }
   }
   const[selectedIndex,selectIndex] = useState({
@@ -155,6 +174,7 @@ const MainPage = () => {
 
   return (
     <div className="">
+      <ToastContainer />
       <div className="stable_content">
         {transferStatus === true ? (
           <div className="transfer_modal">

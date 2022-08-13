@@ -2,7 +2,7 @@ import './style.css'
 
 import React, { useState } from 'react'
 import { useSelector } from "react-redux";
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 
 import { isConnected, connectedAccount } from "../../store/accountReducer"
 
@@ -15,43 +15,42 @@ const Header = (props) => {
   const is_Connected = useSelector(isConnected);
   const account = useSelector(connectedAccount);
   const [mobile, setMobile] = useState(false)
-  const [swapStatus, setSwapStatus] = useState(false)
-  const [stableStatus, setStableStatus] = useState(false)
-  const [bridgeStatus, setBridgeStatus] = useState(false)
-  const [liquidityStatus, setLiquidityStatus] = useState(false)
   const [mobilePageShow, setMobilePageShow] = useState('Bridge')
   const swapStatusHandler = () => {
-    setSwapStatus(true)
-    setStableStatus(false)
-    setBridgeStatus(false)
-    setLiquidityStatus(false)
+    // setSwapStatus(true)
+    // setStableStatus(false)
+    // setBridgeStatus(false)
+    // setLiquidityStatus(false)
     setMobile(false)
     setMobilePageShow('Swap')
   }
   const stableStatusHandler = () => {
-    setStableStatus(true)
-    setSwapStatus(false)
-    setBridgeStatus(false)
-    setLiquidityStatus(false)
+    // setStableStatus(true)
+    // setSwapStatus(false)
+    // setBridgeStatus(false)
+    // setLiquidityStatus(false)
     setMobile(false)
     setMobilePageShow('Stable')
   }
   const bridgeStatusHandler = () => {
-    setBridgeStatus(true)
-    setSwapStatus(false)
-    setStableStatus(false)
-    setLiquidityStatus(false)
+    // setBridgeStatus(true)
+    // setSwapStatus(false)
+    // setStableStatus(false)
+    // setLiquidityStatus(false)
     setMobile(false)
     setMobilePageShow('Bridge')
   }
   const liquidityStatusHandler = () => {
-    setLiquidityStatus(true)
-    setSwapStatus(false)
-    setStableStatus(false)
-    setBridgeStatus(false)
+    // setLiquidityStatus(true)
+    // setSwapStatus(false)
+    // setStableStatus(false)
+    // setBridgeStatus(false)
     setMobile(false)
     setMobilePageShow('Liquidity')
   }
+
+  const params = useLocation();
+  console.log('params', params);
   return (
     <div className="header">
       {mobile === true ? (
@@ -149,13 +148,13 @@ const Header = (props) => {
             <Link to="/swap" className="link_btn">
               Swap
             </Link>
-            {swapStatus === true ? <div className="border_bottom"></div> : null}
+            {params.pathname === '/swap' ? <div className="border_bottom"></div> : null}
           </div>
           <div onClick={stableStatusHandler}>
             <Link to="/stable" className="link_btn">
               Stable
             </Link>
-            {stableStatus === true ? (
+            {params.pathname === '/stable' ? (
               <div className="border_bottom"></div>
             ) : null}
           </div>
@@ -163,7 +162,7 @@ const Header = (props) => {
             <Link to="/" className="link_btn">
               Bridge
             </Link>
-            {bridgeStatus === true ? (
+            {params.pathname === '/' ? (
               <div className="border_bottom"></div>
             ) : null}
           </div>
@@ -171,7 +170,7 @@ const Header = (props) => {
             <Link to="/liquidity" className="link_btn">
               Liquidity
             </Link>
-            {liquidityStatus === true ? (
+            {params.pathname === '/liquidity' ? (
               <div className="border_bottom"></div>
             ) : null}
           </div>
