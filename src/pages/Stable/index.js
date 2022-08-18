@@ -18,27 +18,27 @@ const Stable = () => {
       chainIcon: '/coin/usdt.svg',
       coinName: 'ETH',
       coinIcon: '/coin/usdt.svg',
-      address: '0x272668504C618699486c766Cf5364C9A089b5284',
-      bridge: ['0x83C4f25d0B22031073BD876e2B3b7453646bC3a9', '0x4BaeA38A23C4D2Dd74678646Dc6D94d39f8CE49f'],
-      chainId: '4' //testnet
+      address: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+      bridge: ['0x227996B1f17c5E8caB4Cc843124f0Cf6399d37D9', '0xd274515b94fAb45639136a5BFF74F704509680c7'],
+      chainId: '1'
     },
     {
       chainName: 'USDC',
       chainIcon: '/coin/usdc.svg',
       coinName: 'BSC',
       coinIcon: '/coin/usdc.svg',
-      address: '0x5aE1a10943779fa6a9C31e9Ee65eaED6B0eC3917',
-      bridge: ['0xE66b3b435ef7Cf745200bB21469911C13b59795b', '0xa31Bd8EFb32E509C9B8686cE9652c86C5331717d'],
-      chainId: '97'
+      address: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+      bridge: ['0xE562014651C191178CA2Be7f86910760Ce957C7f', '0x3A893beAC002c85CB6D85865C66093F420483FE2'],
+      chainId: '56'
     },
     {
       chainName: 'XUS',
       chainIcon: '/coin/xus.svg',
       coinName: 'DBX',
       coinIcon: '/coin/xus.svg',
-      address: '0x759fCEf9B28A089575A99f1544ECB976722FCd18',
-      bridge: ['0xC31f86a4AB0c5964b4c1f3c5BeB42128A722638C'],
-      chainId: '48366'
+      address: '0x91efa3FC448b7FCD40880F3ef650eB99635e6143',
+      bridge: ['0x547e9337C88ADFe32C2A9e5273F281b813FB085D'],
+      chainId: '5348'
     },
   ]
   // const [transferStatus, setTransferStatus] = useState(false)
@@ -95,7 +95,7 @@ const Stable = () => {
         }
         const token = new ethers.Contract(from_data[selectedIndex.A].address, ERC20ABI, signer);
         console.log('first', bridge_address, direction, amount.A)
-        // let a = await token.allowance( connected_account, '0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a');
+        // let a = await token.allowance( connected_account, '0x92FC9aDEbbA70647Eb2452930799a8a5eCd03FD8');
         // if(a <= ethers.BigNumber.from(selectedTokenInfo.A.amount))
 
         if(!pendingStatus) {

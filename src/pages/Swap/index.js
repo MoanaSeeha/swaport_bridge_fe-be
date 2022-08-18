@@ -18,13 +18,13 @@ const Swap = () => {
       chainName: "STKN",
       chainIcon: "/coin/usdc.svg",
       coinIcon: "/coin/usdc.svg",
-      address: '0x90c1eF1854ECbF69F418f7F0827D3E986Ad64b50'
+      address: '0x90c1eF1854ECbF69F418f7F0827D3E986Ad64b50'//unedited
     },
     {
       chainName: "USDT",
       chainIcon: "/coin/usdt.svg",
       coinIcon: "/coin/usdt.svg",
-      address: '0xbD790D62FCB1ee94Fe1A89ec155DCB7fb82d85FB'
+      address: '0xbD790D62FCB1ee94Fe1A89ec155DCB7fb82d85FB'//unedited
     },
 
     {
@@ -34,7 +34,9 @@ const Swap = () => {
       address: '0'
     },
   ];
-  const weth_add = '0x532F25428465f9C684A1905F9A8aa93357B2048A';
+  const weth_add = '0x28137287F9Df1cfd08fb108E3a0d08624679D10c';
+  const router_add = '0x92FC9aDEbbA70647Eb2452930799a8a5eCd03FD8';
+  const factory_add = '0x6020b3Fb1Ca97ee249b2900e4952402932611022';
   
   const [transferStatus, setTransferStatus] = useState(false)
   const [open, setOpen] = useState(false)
@@ -76,7 +78,7 @@ const Swap = () => {
     if(a !== b && a !== '' && b !== '') {
       try {
         const signer = provider.getSigner(connected_account);
-        const factory = new ethers.Contract('0xBa34d77fD403dd802510621e34C6Fa4238067aaa', FactoryABI, signer);
+        const factory = new ethers.Contract(factory_add, FactoryABI, signer);
         let pairaddress = await factory.getPair(a, b);
         if(pairaddress !== '0x0000000000000000000000000000000000000000') {
           const pair = new ethers.Contract(pairaddress, PairABI, signer);
@@ -126,12 +128,12 @@ const Swap = () => {
   //   await window.ethereum
   //     .request({
   //       method: "wallet_switchEthereumChain",
-  //       params: [{ chainId: `48366` }],
-  //     }).then(() => dispatch(setChain('48366')))
+  //       params: [{ chainId: `5348` }],
+  //     }).then(() => dispatch(setChain('5348')))
   // }
 
   // useEffect(()=>{
-  //   if(connected_chain !== '48366') {
+  //   if(connected_chain !== '5348') {
   //     console.log('sdfsdfsdfsdf', connected_chain)
   //     changeChain();
   //   }
@@ -140,7 +142,7 @@ const Swap = () => {
   return (
     <div className="">
       <ToastContainer />
-      {connected_account === '' || connected_chain !== '48366'?<div style={{
+      {connected_account === '' || connected_chain !== '5348'?<div style={{
             padding: '20px',
             fontSize: '30px',
             color: 'white',
@@ -344,7 +346,7 @@ const Swap = () => {
         <div className="transfer_button_swap" onClick={async () => {
           if(selectedTokenInfo.A.amount !== 0 && selectedTokenInfo.B.amount !== 0) {
             
-            const Router = new ethers.Contract('0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a', RouterABI, signer);
+            const Router = new ethers.Contract(router_add, RouterABI, signer);
             if(selectedTokenInfo.A.address === '0') {
               const options = {value: ethers.utils.parseEther(selectedTokenInfo.A.amount.toString())}
               await Router.swapExactETHForTokens(
@@ -357,9 +359,9 @@ const Swap = () => {
             } 
             if(selectedTokenInfo.B.address === '0') {
               const token_A = new ethers.Contract(selectedTokenInfo.A.address, ERC20ABI, signer);
-              let a = await token_A.allowance( connected_account, '0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a');
+              let a = await token_A.allowance( connected_account, router_add);
               if(a <= ethers.BigNumber.from(selectedTokenInfo.A.amount))
-                await token_A.approve('0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a', ethers.constants.MaxUint256);
+                await token_A.approve(router_add, ethers.constants.MaxUint256);
               token_A.on('Approval',async (owner, spender, value) => {
                 await Router.swapExactTokensForETH(
                   ethers.BigNumber.from(selectedTokenInfo.A.amount).mul(ethers.BigNumber.from(10).pow(selectedTokenInfo.A.data.unit)),
@@ -372,13 +374,13 @@ const Swap = () => {
             }
             if(selectedTokenInfo.A.address !== '0' && selectedTokenInfo.B.address !== '0') {
               const token_A = new ethers.Contract(selectedTokenInfo.A.address, ERC20ABI, signer);
-              let a = await token_A.allowance( connected_account, '0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a');
+              let a = await token_A.allowance( connected_account, router_add);
               if(a <= ethers.BigNumber.from(selectedTokenInfo.A.amount))
-                await token_A.approve('0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a', ethers.constants.MaxUint256);
+                await token_A.approve(router_add, ethers.constants.MaxUint256);
               const token_B = new ethers.Contract(selectedTokenInfo.B.address, ERC20ABI, signer);
-              let b = await token_B.allowance( connected_account, '0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a');
+              let b = await token_B.allowance( connected_account, router_add);
               if(b <= ethers.BigNumber.from(selectedTokenInfo.B.amount))
-                await token_B.approve('0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a', ethers.constants.MaxUint256);
+                await token_B.approve(router_add, ethers.constants.MaxUint256);
               token_B.on('Approval',async (owner, spender, value) => {
                 await Router.swapExactTokensForTokens(
                   ethers.BigNumber.from(selectedTokenInfo.A.amount).mul(ethers.BigNumber.from(10).pow(selectedTokenInfo.A.data.unit)),

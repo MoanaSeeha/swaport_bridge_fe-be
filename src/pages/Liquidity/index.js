@@ -61,6 +61,7 @@ const Liquidity = () => {
     setHelp(!help);
   };
   const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const router_add = '0x92FC9aDEbbA70647Eb2452930799a8a5eCd03FD8';
 
   const add_liquidity_handler = async () => {
     let tokenNameA, tokenUnitsA, tokenbalance, tokenBalanceA, tokenSymbolA, tokenNameB, tokenUnitsB, tokenbalanceb, tokenBalanceB, tokenSymbolB;
@@ -215,13 +216,13 @@ const inputTokenValueModal = () => (
             <div className="add_liq_btn" onClick={async () => {
               
               const signer = provider.getSigner(connected_account);
-              const router = new ethers.Contract('0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a', RouterABI, signer);
+              const router = new ethers.Contract(router_add, RouterABI, signer);
                 if(tokenInfo.A.address === '0') {
                   const token_B = new ethers.Contract(tokenInfo.B.address, ERC20ABI, signer);
                   const options = {value: ethers.utils.parseEther(tokenValue.A.toString())}
-                  let a = await token_B.allowance( connected_account, '0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a');
+                  let a = await token_B.allowance( connected_account, router_add);
                     if(a <= ethers.BigNumber.from(tokenValue.B))
-                  await token_B.approve('0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a', ethers.constants.MaxUint256);
+                  await token_B.approve(router_add, ethers.constants.MaxUint256);
                   token_B.on('Approval',async (owner, spender, value) => {
                     await router.addLiquidityETH(
                       tokenInfo.B.address,
@@ -235,9 +236,9 @@ const inputTokenValueModal = () => (
                 }
                 if(tokenInfo.B.address === '0') {
                   const token_A = new ethers.Contract(tokenInfo.A.address, ERC20ABI, signer);
-                  let a = await token_A.allowance( connected_account, '0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a');
+                  let a = await token_A.allowance( connected_account, router_add);
                   if(a <= ethers.BigNumber.from(tokenValue.A))
-                    await token_A.approve('0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a', ethers.constants.MaxUint256);
+                    await token_A.approve(router_add, ethers.constants.MaxUint256);
                   const options = {value: ethers.utils.parseEther(tokenValue.B.toString())}
                   token_A.on('Approval',async (owner, spender, value) => {
                     await router.addLiquidityETH(
@@ -253,12 +254,12 @@ const inputTokenValueModal = () => (
                 if(tokenInfo.A.address !== '0' && tokenInfo.B.address !== '0' ) {
                   const token_A = new ethers.Contract(tokenInfo.A.address, ERC20ABI, signer);
                   const token_B = new ethers.Contract(tokenInfo.B.address, ERC20ABI, signer);
-                  let a = await token_A.allowance( connected_account, '0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a');
+                  let a = await token_A.allowance( connected_account, router_add);
                   if(a <= ethers.BigNumber.from(tokenValue.A))
-                    await token_A.approve('0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a', ethers.constants.MaxUint256);
-                  let b = await token_B.allowance( connected_account, '0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a');
+                    await token_A.approve(router_add, ethers.constants.MaxUint256);
+                  let b = await token_B.allowance( connected_account, router_add);
                   if(b <= ethers.BigNumber.from(tokenValue.B))
-                    await token_B.approve('0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a', ethers.constants.MaxUint256);
+                    await token_B.approve(router_add, ethers.constants.MaxUint256);
                   token_B.on('Approval',async (owner, spender, value) => {
                     await router.addLiquidity(
                       tokenInfo.A.address,
@@ -360,7 +361,7 @@ const inputTokenValueModal = () => (
                     <span>I understand</span>
                   </div>
                   <div onClick={async () => {
-                    // const router = new ethers.Contract('0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a', RouterABI, provider);
+                    // const router = new ethers.Contract('0x92FC9aDEbbA70647Eb2452930799a8a5eCd03FD8', RouterABI, provider);
                     open.A?setTokenaddress({
                       A: inputValue,
                       B: tokenaddress.B

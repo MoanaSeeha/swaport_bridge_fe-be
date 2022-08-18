@@ -41,7 +41,7 @@ const MainPage = () => {
       chainIcon: '/main/dbx.svg',
       coinName: 'DBX',
       coinIcon: '/main/dbx.svg',
-      address: '0x759fCEf9B28A089575A99f1544ECB976722FCd18',
+      address: '',
       bridge: ['0x547e9337C88ADFe32C2A9e5273F281b813FB085D'],
       chainId: '5348',
       native: true
@@ -49,7 +49,6 @@ const MainPage = () => {
   ]
 
   const [transferStatus, setTransferStatus] = useState(false);
-  // const[pendingStatus,setPendingStatus] = useState(false);
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   const connected_account = useSelector(connectedAccount);
   let signer = connected_account === ''?null:provider.getSigner(connected_account);
@@ -57,9 +56,6 @@ const MainPage = () => {
   console.log(connected_chain, typeof connected_chain);
 
   const transferHandler = async () => {
-    // setTransferStatus(true)
-    // console.log('transferStatus')
-
     console.log(connected_chain, from_data[selectedIndex.A].chainId, connected_account)
     if(connected_chain === from_data[selectedIndex.A].chainId) {
       if(selectedIndex.A !== selectedIndex.B) {
@@ -97,48 +93,32 @@ const MainPage = () => {
         }
         const token = new ethers.Contract(from_data[selectedIndex.A].address, ERC20ABI, signer);
         console.log('first', bridge_address, direction, amount.A)
-        // let a = await token.allowance( connected_account, '0x9Ca27b9255Fe570BE851Bf67CF3a1D0393cbBC4a');
-        // if(a <= ethers.BigNumber.from(selectedTokenInfo.A.amount))
-
-        // if(!pendingStatus) {
           if(amount.A !== 0 && amount.A !== '') {
-            // console.log(ethers.BigNumber.from(amount.A).mul(ethers.BigNumber.from(10).pow(unit)).toString(), (ethers.BigNumber.from(amount.A).mul(ethers.BigNumber.from(10).pow(unit)) - a).toString())
-            // if(a <= ethers.BigNumber.from(amount.A).mul(ethers.BigNumber.from(10).pow(unit))) {
-              // console.log('bbbbbbbbbb')
-              if(from_data[selectedIndex.A].native) {
-                const BAX = new ethers.Contract(bridge_address, BridgeAssistAbi, signer)
-                const ptx = await BAX.populateTransaction.writeEntry(
-                  direction === "XE"
-                );
-                console.log(ptx);
-                ptx.value = ethers.utils.parseEther(amount.A.toString());
-                console.log({
-                  amt: amount.A.toString(),
-                });
-                const tx = await signer.sendTransaction(ptx);
-                console.log({ tx });
-                // await _wait();
-
-              } else {
-                let unit = await token.decimals();
-                let a = await token.allowance( connected_account, bridge_address);
-                await token.approve(bridge_address, ethers.BigNumber.from(amount.A).mul(ethers.BigNumber.from(10).pow(unit)) - a);
-                token.on('Approval',async (owner, spender, value) => {
-                  console.log(value.toString() !== '0');
-                  if(value.toString() !== '0') {
-                    let trans = await axios.get(`${url}?direction=${direction}&address=${connected_account}`);
-                    console.log(trans)
-                    // setPendingStatus(false)
-                  }
-                })
-              }
-
-              
-            // } else {
-            //   let trans = await axios.get(`${url}?direction=${direction}&address=${connected_account}&coinDirection=SS`);
-            //     console.log(trans)
-            //     setPendingStatus(false)
-            // }     
+            if(from_data[selectedIndex.A].native) {
+              const BAX = new ethers.Contract(bridge_address, BridgeAssistAbi, signer)
+              const ptx = await BAX.populateTransaction.writeEntry(
+                direction === "XE"
+              );
+              console.log(ptx);
+              ptx.value = ethers.utils.parseEther(amount.A.toString());
+              console.log({
+                amt: amount.A.toString(),
+              });
+              const tx = await signer.sendTransaction(ptx);
+              console.log({ tx });
+            } else {
+              let unit = await token.decimals();
+              let a = await token.allowance( connected_account, bridge_address);
+              await token.approve(bridge_address, ethers.BigNumber.from(amount.A).mul(ethers.BigNumber.from(10).pow(unit)) - a);
+              token.on('Approval',async (owner, spender, value) => {
+                console.log(value.toString() !== '0');
+                if(value.toString() !== '0') {
+                  let trans = await axios.get(`${url}?direction=${direction}&address=${connected_account}`);
+                  console.log(trans)
+                  // setPendingStatus(false)
+                }
+              })
+            }  
           }
           else  { toast.error("Input Amount to Transfer", {
             position: "top-right",
