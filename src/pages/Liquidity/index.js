@@ -309,9 +309,83 @@ const inputTokenValueModal = () => (
                   justifyContent: 'center',
                   alignItems: 'center',
                   cursor: 'pointer'
-                }} onClick={() => {
-                  // setOpen({A:false, B:false})
-                  setImportStatus(true);
+                }} onClick={async () => {
+                  try {
+                    open.A?setTokenaddress({
+                      A: inputValue,
+                      B: tokenaddress.B
+                    }):setTokenaddress({
+                      B: inputValue,
+                      A: tokenaddress.A
+                    })
+                    open.A?setSelectIndex({
+                      A: token_data.length-1,
+                      B: selectIndex.B
+                    }):setSelectIndex({
+                      B: token_data.length-1,
+                      A: selectIndex.A
+                    });
+  
+                    let tokenName, tokenUnits, tokenbalance, tokenBalance, tokenSymbol;
+                    // if(tokenaddress.A === '0') {
+                    //   tokenNameA = 'DBX';
+                    //   tokenUnitsA = 18;
+                    //   tokenbalance = await provider.getBalance(connected_account);
+                    //   tokenBalanceA = ethers.utils.formatEther(tokenbalance);
+                    //   tokenSymbolA = 'DBX';
+                    // } else {
+                    //   const token_A = new ethers.Contract(tokenaddress.A, ERC20ABI, provider);
+                    //   tokenNameA = await token_A.name();
+                    //   tokenUnitsA = await token_A.decimals();
+                    //   tokenbalance = await token_A.balanceOf(connected_account);
+                    //   tokenBalanceA = ethers.utils.formatUnits(tokenbalance, tokenUnitsA);
+                    //   tokenSymbolA = await token_A.symbol();
+                    // } 
+                    // if(tokenaddress.B === '0') {
+                    //   tokenNameB = 'DBX';
+                    //   tokenUnitsB = 18;
+                    //   tokenbalance = await provider.getBalance(connected_account);
+                    //   tokenBalanceB = ethers.utils.formatEther(tokenbalance);
+                    //   tokenSymbolB = 'DBX';
+                    // } else {
+                    //   const token_B = new ethers.Contract(tokenaddress.B, ERC20ABI, provider);
+                    //   tokenNameB = await token_B.name();
+                    //   tokenUnitsB = await token_B.decimals();
+                    //   tokenbalanceb = await token_B.balanceOf(connected_account);
+                    //   tokenBalanceB = ethers.utils.formatUnits(tokenbalanceb, tokenUnitsB);
+                    //   tokenSymbolB = await token_B.symbol();
+  
+                    // }
+                    const token = new ethers.Contract(inputValue, ERC20ABI, provider);
+                      tokenName = await token.name();
+                      tokenUnits = await token.decimals();
+                      tokenbalance = await token.balanceOf(connected_account);
+                      tokenBalance = ethers.utils.formatUnits(tokenbalance, tokenUnits);
+                      tokenSymbol = await token.symbol();
+                      open.A?settokenInfo({
+                        A:{
+                          address: inputValue,
+                          name: tokenName,
+                          decimal: tokenUnits,
+                          balance: tokenBalance,
+                          symbol: tokenSymbol
+                        },
+                        B: tokenInfo.B
+                      }):settokenInfo({
+                        B:{
+                          address: inputValue,
+                          name: tokenName,
+                          decimal: tokenUnits,
+                          balance: tokenBalance,
+                          symbol: tokenSymbol
+                        },
+                        A: tokenInfo.A
+                    })
+                    setImportStatus(true);
+                  } catch (error) {
+                    console.log(error);
+                  }
+                  
                 }}>Import</div>
 
               </div>
@@ -347,10 +421,16 @@ const inputTokenValueModal = () => (
               </div>
               <div className="import_bottom">
                 <div className="import_bottom_top">
-                  <div className="import_bottom_top_text">DBX (DBX)</div>
+                  <div className="import_bottom_top_text">{open.A?tokenInfo.A.name:tokenInfo.B.name} ({open.A?tokenInfo.A.symbol:tokenInfo.B.symbol})</div>
                   <div className="import_bottom_top_bottom">
-                    <div>Ox67...57dd</div>
-                    <div className="view_btn">View on DBXScan</div>
+                    {
+                      inputValue.substring(0, 5) + '...'+inputValue.substring(inputValue.length-4, inputValue.length)
+                    }
+                    <div className="view_btn" onClick={() => {
+                      let url = `https://dbxscan.com/address/${open.A?tokenInfo.A.address:tokenInfo.B.address}`
+                      console.log(url)
+                      window.open(url, "_blank",  "noopener noreferrer");
+                    }}>View on DBXScan</div>
                   </div>
                 </div>
                 <div className="import_bottom_bottom">

@@ -244,12 +244,17 @@ const Swap = () => {
                   tokenBalanceA = ethers.utils.formatEther(tokenbalance);
                   tokenSymbolA = 'DBX';
                 } else {
-                  const token_A = new ethers.Contract(tokens_data[e].address, ERC20ABI, provider);
-                  // tokenNameA = await token_A.name();
-                  tokenUnitsA = await token_A.decimals();
-                  tokenbalance = await token_A.balanceOf(connected_account);
-                  tokenBalanceA = ethers.utils.formatUnits(tokenbalance, tokenUnitsA);
-                  tokenSymbolA = await token_A.symbol();
+                  try {
+                    const token_A = new ethers.Contract(tokens_data[e].address, ERC20ABI, provider);
+                    // tokenNameA = await token_A.name();
+                    tokenUnitsA = await token_A.decimals();
+                    tokenbalance = await token_A.balanceOf(connected_account);
+                    tokenBalanceA = ethers.utils.formatUnits(tokenbalance, tokenUnitsA);
+                    tokenSymbolA = await token_A.symbol();
+                  } catch (error) {
+                    console.log(error)
+                  }
+                  
                 } 
                 
                 await setselectedTokenInfo({
@@ -314,12 +319,16 @@ const Swap = () => {
                   tokenBalanceB = ethers.utils.formatEther(tokenbalance);
                   tokenSymbolB = 'DBX';
                 } else {
-                  const token_B = new ethers.Contract(tokens_data[e].address, ERC20ABI, provider);
-                  // tokenNameB = await token_B.name();
-                  tokenUnitsB = await token_B.decimals();
-                  tokenbalanceb = await token_B.balanceOf(connected_account);
-                  tokenBalanceB = ethers.utils.formatUnits(tokenbalanceb, tokenUnitsB);
-                  tokenSymbolB = await token_B.symbol();
+                  try {
+                    const token_B = new ethers.Contract(tokens_data[e].address, ERC20ABI, provider);
+                    // tokenNameB = await token_B.name();
+                    tokenUnitsB = await token_B.decimals();
+                    tokenbalanceb = await token_B.balanceOf(connected_account);
+                    tokenBalanceB = ethers.utils.formatUnits(tokenbalanceb, tokenUnitsB);
+                    tokenSymbolB = await token_B.symbol();
+                  } catch (error) {
+                    console.log(error)
+                  }
                 }
 
                 await setselectedTokenInfo({
