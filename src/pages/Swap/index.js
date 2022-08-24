@@ -354,9 +354,10 @@ const Swap = () => {
         {/* Transfer */}
         <div className="transfer_button_swap" onClick={async () => {
           if(selectedTokenInfo.A.amount !== 0 && selectedTokenInfo.B.amount !== 0) {
-            
+            console.log('______________________');
             const Router = new ethers.Contract(router_add, RouterABI, signer);
             if(selectedTokenInfo.A.address === '0') {
+              console.log('++++++++++')
               const options = {value: ethers.utils.parseEther(selectedTokenInfo.A.amount.toString())}
               await Router.swapExactETHForTokens(
                 0, 
@@ -367,38 +368,66 @@ const Swap = () => {
               )
             } 
             if(selectedTokenInfo.B.address === '0') {
+              console.log('==================')
               const token_A = new ethers.Contract(selectedTokenInfo.A.address, ERC20ABI, signer);
               let a = await token_A.allowance( connected_account, router_add);
-              if(a <= ethers.BigNumber.from(selectedTokenInfo.A.amount))
+              if(a <= ethers.BigNumber.from(selectedTokenInfo.A.amount)) {
                 await token_A.approve(router_add, ethers.constants.MaxUint256);
-              token_A.on('Approval',async (owner, spender, value) => {
-                await Router.swapExactTokensForETH(
+                token_A.on('Approval',async (owner, spender, value) => {
+                  let tx = await Router.swapExactTokensForETH(
+                    ethers.BigNumber.from(selectedTokenInfo.A.amount).mul(ethers.BigNumber.from(10).pow(selectedTokenInfo.A.data.unit)),
+                    0, 
+                    [selectedTokenInfo.A.address, weth_add], 
+                    connected_account, 
+                    ethers.constants.MaxUint256,
+                  )
+                  console.log(tx)
+                })
+              }
+                
+              else {
+                let tx = await Router.swapExactTokensForETH(
                   ethers.BigNumber.from(selectedTokenInfo.A.amount).mul(ethers.BigNumber.from(10).pow(selectedTokenInfo.A.data.unit)),
                   0, 
                   [selectedTokenInfo.A.address, weth_add], 
                   connected_account, 
                   ethers.constants.MaxUint256,
-                )
-              })
+                );
+                console.log(tx)
+              }
             }
             if(selectedTokenInfo.A.address !== '0' && selectedTokenInfo.B.address !== '0') {
+              console.log('((((((((((((((((((______________________))))))))))))))))))');
               const token_A = new ethers.Contract(selectedTokenInfo.A.address, ERC20ABI, signer);
               let a = await token_A.allowance( connected_account, router_add);
               if(a <= ethers.BigNumber.from(selectedTokenInfo.A.amount))
                 await token_A.approve(router_add, ethers.constants.MaxUint256);
               const token_B = new ethers.Contract(selectedTokenInfo.B.address, ERC20ABI, signer);
               let b = await token_B.allowance( connected_account, router_add);
-              if(b <= ethers.BigNumber.from(selectedTokenInfo.B.amount))
+              if(b <= ethers.BigNumber.from(selectedTokenInfo.B.amount)) {
                 await token_B.approve(router_add, ethers.constants.MaxUint256);
-              token_B.on('Approval',async (owner, spender, value) => {
-                await Router.swapExactTokensForTokens(
+                token_B.on('Approval',async (owner, spender, value) => {
+                  let tx = await Router.swapExactTokensForTokens(
+                    ethers.BigNumber.from(selectedTokenInfo.A.amount).mul(ethers.BigNumber.from(10).pow(selectedTokenInfo.A.data.unit)),
+                    0,
+                    [selectedTokenInfo.A.address, weth_add, selectedTokenInfo.B.address], 
+                    connected_account, 
+                    ethers.constants.MaxUint256,
+                  )
+                  console.log(tx);
+                })
+              }
+              else {
+                console.log('0909009909')
+                let tx = await Router.swapExactTokensForTokens(
                   ethers.BigNumber.from(selectedTokenInfo.A.amount).mul(ethers.BigNumber.from(10).pow(selectedTokenInfo.A.data.unit)),
                   0,
                   [selectedTokenInfo.A.address, weth_add, selectedTokenInfo.B.address], 
                   connected_account, 
                   ethers.constants.MaxUint256,
                 )
-              })
+                console.log(tx);
+              }
             }
             // address[] memory path; 
             // if (tokenA == WETH || tokenB == WETH) { 

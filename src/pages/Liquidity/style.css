@@ -8,6 +8,7 @@
 }
 .liq_text .large_text {
   margin-top: 25px !important;
+  margin-bottom: 25px !important;
   font-family: 'Montserrat';
   font-style: normal;
   font-weight: 700;
@@ -410,7 +411,6 @@
   justify-content: center;
   position: relative;
   width: 75%;
-  height: 52%;
   z-index: 200;
   border-radius: 25px;
   background: #1e2c37;
