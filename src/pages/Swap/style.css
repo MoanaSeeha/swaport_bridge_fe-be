@@ -24,7 +24,7 @@
   font-style: normal;
   font-weight: 700;
   font-size: 21px;
-  margin-top: 80px;
+  margin-top: 125px;
   margin-left: 20px;
   margin-bottom: 10px;
 }
@@ -172,6 +172,7 @@
 
 .chain-form_swap .chain .icon {
   margin-right: 5px;
+  object-fit: cover;
 }
 
 .chain-form_swap_swap .chain .text {

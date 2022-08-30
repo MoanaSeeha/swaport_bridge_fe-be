@@ -15,23 +15,27 @@ import ERC20ABI from '../../abis/ERC20.json';
 const Swap = () => {
   const tokens_data = [
     {
-      chainName: "STKN",
-      chainIcon: "/coin/usdc.svg",
-      coinIcon: "/coin/usdc.svg",
-      address: '0x90c1eF1854ECbF69F418f7F0827D3E986Ad64b50'//unedited
-    },
-    {
-      chainName: "USDT",
-      chainIcon: "/coin/usdt.svg",
-      coinIcon: "/coin/usdt.svg",
-      address: '0xbD790D62FCB1ee94Fe1A89ec155DCB7fb82d85FB'//unedited
-    },
-
-    {
       chainName: "DBX",
       chainIcon: "/coin/xus.svg",
       coinIcon: "/coin/xus.svg",
       address: '0'
+    },
+    {
+      chainName: "XUS",
+      chainIcon: "/coin/usdt.svg",
+      coinIcon: "/coin/usdt.svg",
+      address: '0x91efa3FC448b7FCD40880F3ef650eB99635e6143'
+    },
+    {
+      chainName: "WDBX",
+      chainIcon: "/coin/xus.svg",
+      coinIcon: "/coin/xus.svg",
+      address: '0x28137287F9Df1cfd08fb108E3a0d08624679D10c'
+    },
+    {
+      chainName: "Import",
+      chainIcon: "/coin/unkhown.png",
+      coinIcon: "/coin/plus.svg",
     },
   ];
   const weth_add = '0x28137287F9Df1cfd08fb108E3a0d08624679D10c';
@@ -41,7 +45,9 @@ const Swap = () => {
   const [transferStatus, setTransferStatus] = useState(false)
   const [open, setOpen] = useState(false)
   const [toOpen, setToOpen] = useState(false)
-  const[selectedTokenId,selectTokenId] = useState({
+  const [importTokenOpened, openImportToken] = useState({openStatus: false, is_A: true})
+  const [import_address, setImportAddress] = useState('');
+  const [selectedTokenId,selectTokenId] = useState({
     A: 0,
     B: 1
   });
@@ -123,25 +129,103 @@ const Swap = () => {
       return (0);
     }
   }
-  console.log( connected_chain )
-  // const changeChain = async () => {
-  //   await window.ethereum
-  //     .request({
-  //       method: "wallet_switchEthereumChain",
-  //       params: [{ chainId: `5348` }],
-  //     }).then(() => dispatch(setChain('5348')))
-  // }
+  
+  const selectToken = async (e, token_address, is_A) => {
+    selectTokenId(is_A?{
+      A: e, B:selectedTokenId.B
+    }:{
+      B: e, A:selectedTokenId.A
+    })
+    let tokenbalance, tokenUnits, tokenBalance, tokenSymbol;
+    if(token_address === '0') {
+      // tokenNameB = 'DBX';
+      tokenUnits = 18;
+      tokenbalance = await provider.getBalance(connected_account);
+      tokenBalance = ethers.utils.formatEther(tokenbalance);
+      tokenSymbol = 'DBX';
+    } else {
+      try {
+        const token_B = new ethers.Contract(token_address, ERC20ABI, provider);
+        // tokenNameB = await token_B.name();
+        tokenUnits = await token_B.decimals();
+        tokenBalance = ethers.utils.formatUnits(await token_B.balanceOf(connected_account), tokenUnits);
+        tokenSymbol = await token_B.symbol();
+      } catch (error) {
+        console.log(error)
+      }
+    }
 
-  // useEffect(()=>{
-  //   if(connected_chain !== '5348') {
-  //     console.log('sdfsdfsdfsdf', connected_chain)
-  //     changeChain();
-  //   }
-  // },[]);
+    await setselectedTokenInfo(is_A?{
+      B:selectedTokenInfo.B, 
+      A:{
+        address:token_address,
+        amount:selectedTokenInfo.A.amount,
+        data: {
+          symbol: tokenSymbol,
+          unit:tokenUnits,
+          balance:tokenBalance
+        }
+      },
+      // path: selectedTokenInfo.path
+    }:{
+      A:selectedTokenInfo.A, 
+      B:{
+        address:token_address,
+        amount:selectedTokenInfo.B.amount,
+        data: {
+          symbol: tokenSymbol,
+          unit:tokenUnits,
+          balance:tokenBalance
+        }
+      },
+      // path: selectedTokenInfo.path
+    }) 
+    setreserves(is_A?await setReceiveAmount(token_address, selectedTokenInfo.B.address ):await setReceiveAmount(selectedTokenInfo.A.address, token_address));
+  }
+
+  const importTokenModal = () => {
+    return <div className="liq_modal">
+        <div className="liq_modal_layout">
+          <div
+            className="close_btn"
+            onClick={() => {
+              openImportToken({openStatus: false, is_A: true});
+            }}
+          >
+            <img src="/stable/closeBtn.svg" alt="" />
+          </div>
+          <div className="liq_modal_text" style={{'margin': '15px'}}>
+            <div className="import_token" style={{display: 'flex', alignItems: 'stretch', margin: '0 10px'}}>
+              <input type="text" placeholder="Import Token By Address" onChange={e => setImportAddress(e.target.value)} />
+              <div style={{
+                padding: '10px',
+                borderRadius: '10px',
+                border: '1px gray solid',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                cursor: 'pointer'
+              }} onClick={async () => {
+                try {
+                  selectToken(tokens_data.length-1, import_address, importTokenOpened.is_A);
+                  openImportToken({openStatus: false, is_A: true});
+                } catch (error) {
+                  console.log(error)
+                }
+              }}>Import</div>
+            </div>
+          </div>
+        </div>
+      </div>
+  }
+  
 
   return (
     <div className="">
       <ToastContainer />
+      {
+        importTokenOpened.openStatus?importTokenModal():null
+      }
       {connected_account === '' || connected_chain !== '5348'?<div style={{
             padding: '20px',
             fontSize: '30px',
@@ -232,45 +316,15 @@ const Swap = () => {
             <SelectSwap
               data={tokens_data}
               neighbourId={selectedTokenId.B}
+              importTokenData={{
+                chainName: selectedTokenInfo.A.data.symbol
+              }}
               onChange={async (e) => {
-                selectTokenId({
-                  A: e, B:selectedTokenId.B
-                })
-                let  tokenUnitsA, tokenbalance,tokenBalanceA, tokenSymbolA;
-                if(tokens_data[e].address === '0') {
-                  // tokenNameA = 'DBX';
-                  tokenUnitsA = 18;
-                  tokenbalance = await provider.getBalance(connected_account);
-                  tokenBalanceA = ethers.utils.formatEther(tokenbalance);
-                  tokenSymbolA = 'DBX';
-                } else {
-                  try {
-                    const token_A = new ethers.Contract(tokens_data[e].address, ERC20ABI, provider);
-                    // tokenNameA = await token_A.name();
-                    tokenUnitsA = await token_A.decimals();
-                    tokenbalance = await token_A.balanceOf(connected_account);
-                    tokenBalanceA = ethers.utils.formatUnits(tokenbalance, tokenUnitsA);
-                    tokenSymbolA = await token_A.symbol();
-                  } catch (error) {
-                    console.log(error)
-                  }
-                  
-                } 
+                if(e !== tokens_data.length-1) selectToken(e, tokens_data[e].address, true)
+                else {
+                  openImportToken({openStatus: true, is_A: true});
+                }
                 
-                await setselectedTokenInfo({
-                  B:selectedTokenInfo.B, 
-                  A:{
-                    address:tokens_data[e].address,
-                    amount:Number(selectedTokenInfo.A.amount),
-                    data: {
-                      symbol: tokenSymbolA,
-                      unit:tokenUnitsA,
-                      balance:tokenBalanceA
-                    }
-                  },
-                  // path: selectedTokenInfo.path
-                }) 
-                setreserves( await setReceiveAmount(tokens_data[e].address, selectedTokenInfo.B.address));
               }}
               setOpen={setOpen}
               open={open}
@@ -306,45 +360,15 @@ const Swap = () => {
           <div className="select_coin">
             <SelectSwap
               data={tokens_data}
+              importTokenData={{
+                chainName: selectedTokenInfo.B.data.symbol
+              }}
               neighbourId={selectedTokenId.A}
               onChange={async (e) => {
-                selectTokenId({
-                  B: e, A:selectedTokenId.A
-                })
-                let tokenbalance, tokenUnitsB, tokenbalanceb, tokenBalanceB, tokenSymbolB;
-                if(tokens_data[e].address === '0') {
-                  // tokenNameB = 'DBX';
-                  tokenUnitsB = 18;
-                  tokenbalance = await provider.getBalance(connected_account);
-                  tokenBalanceB = ethers.utils.formatEther(tokenbalance);
-                  tokenSymbolB = 'DBX';
-                } else {
-                  try {
-                    const token_B = new ethers.Contract(tokens_data[e].address, ERC20ABI, provider);
-                    // tokenNameB = await token_B.name();
-                    tokenUnitsB = await token_B.decimals();
-                    tokenbalanceb = await token_B.balanceOf(connected_account);
-                    tokenBalanceB = ethers.utils.formatUnits(tokenbalanceb, tokenUnitsB);
-                    tokenSymbolB = await token_B.symbol();
-                  } catch (error) {
-                    console.log(error)
-                  }
+                if(e !== tokens_data.length-1) selectToken(e, tokens_data[e].address, false)
+                else {
+                  openImportToken({openStatus: true, is_A: false});
                 }
-
-                await setselectedTokenInfo({
-                  A:selectedTokenInfo.A, 
-                  B:{
-                    address:tokens_data[e].address,
-                    amount:selectedTokenInfo.B.amount,
-                    data: {
-                      symbol: tokenSymbolB,
-                      unit:tokenUnitsB,
-                      balance:tokenBalanceB
-                    }
-                  },
-                  // path: selectedTokenInfo.path
-                }) 
-                setreserves(await setReceiveAmount(selectedTokenInfo.A.address, tokens_data[e].address));
               }}
               setOpen={setToOpen}
               open={toOpen}

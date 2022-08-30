@@ -2,7 +2,7 @@ import './style.css'
 
 import React, { useEffect, useState } from 'react'
 
-const SelectSwap = ({ data, onChange, setOpen, open, neighbourId }) => {
+const SelectSwap = ({ data, onChange, setOpen, open, neighbourId, importTokenData }) => {
   // const [open, setOpen] = useState(false)
   const [selectIndex, setSelectIndex] = useState(neighbourId === 0?1:0)
 
@@ -17,13 +17,13 @@ const SelectSwap = ({ data, onChange, setOpen, open, neighbourId }) => {
           <div className="chain">
             <div>
               <img
-                src={data[selectIndex].chainIcon}
+                src={data.length-1 !== selectIndex?data[selectIndex].coinIcon:data[selectIndex].chainIcon}
                 alt="chain icon"
                 className="icon"
               />
-              <p className="text">{data[selectIndex].chainName}</p>
+              <p className="text">{data.length-1 !== selectIndex?data[selectIndex].chainName:importTokenData.chainName}</p>
             </div>
-            <span className="ChainText">{data[selectIndex].coinName}</span>
+            <span className="ChainText">{data.length-1 !== selectIndex?data[selectIndex].coinName:importTokenData.coinName}</span>
             <div className="arrow">
               {open === true ? (
                 <img src="/coin/arrow.svg" alt=''/>
@@ -54,7 +54,7 @@ const SelectSwap = ({ data, onChange, setOpen, open, neighbourId }) => {
                 <li
                 key={index}
                   onClick={() => {
-                    if(neighbourId !== index) setSelectIndex(index)
+                    if(neighbourId !== index || index === data.length-1) setSelectIndex(index)
                     setOpen(false)
                   }}
                 >
