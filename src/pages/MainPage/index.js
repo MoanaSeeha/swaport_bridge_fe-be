@@ -49,6 +49,27 @@ const MainPage = () => {
   ]
 
   const [transferStatus, setTransferStatus] = useState(false);
+  const [selectedTokenInfo,setselectedTokenInfo] = useState({
+    A: {
+      address:'0x90c1eF1854ECbF69F418f7F0827D3E986Ad64b50',
+      amount:0,
+      data:{
+        symbol: '',
+        balance: 0,
+        unit: 18
+      },
+    },
+    B: {
+      address:'0xbD790D62FCB1ee94Fe1A89ec155DCB7fb82d85FB',
+      amount:0,
+      data:{
+        symbol: '',
+        balance: 0,
+        unit: 18
+      }
+    },
+    // path: ['0xd02F9F362d147Ee8F66BdfAfafa5Fa073cad67d5', '0xbD790D62FCB1ee94Fe1A89ec155DCB7fb82d85FB']
+  });
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   const connected_account = useSelector(connectedAccount);
   let signer = connected_account === ''?null:provider.getSigner(connected_account);
@@ -96,16 +117,29 @@ const MainPage = () => {
           if(amount.A !== 0 && amount.A !== '') {
             if(from_data[selectedIndex.A].native) {
               const BAX = new ethers.Contract(bridge_address, BridgeAssistAbi, signer)
-              const ptx = await BAX.populateTransaction.writeEntry(
-                direction === "XE"
-              );
-              console.log(ptx);
-              ptx.value = ethers.utils.parseEther(amount.A.toString());
-              console.log({
-                amt: amount.A.toString(),
-              });
-              const tx = await signer.sendTransaction(ptx);
-              console.log({ tx });
+              try {
+                const ptx = await BAX.populateTransaction.writeEntry(
+                  direction === "XE"
+                );
+                console.log(ptx);
+                ptx.value = ethers.utils.parseEther(amount.A.toString());
+                console.log({
+                  amt: amount.A.toString(),
+                });
+                const tx = await signer.sendTransaction(ptx);
+                console.log({ tx });
+                BAX.on('WriteEntry',async (owner, spender, value) => {
+                  console.log(owner === connectedAccount);
+                  let trans = await axios.get(`${url}?direction=${direction}&address=${connected_account}`);
+                  console.log(trans)
+                })
+              } catch (error) {
+                console.log('erroror')
+                if(error?.error?.data?.message === 'execution reverted: Entry already contains this msg.value') {
+                  let trans = await axios.get(`${url}?direction=${direction}&address=${connected_account}`);
+                  console.log(trans)
+                }
+              }
             } else {
               let unit = await token.decimals();
               let a = await token.allowance( connected_account, bridge_address);
@@ -144,6 +178,7 @@ const MainPage = () => {
       // alert('Switch Network to' + from_data[selectedIndex.A].coinName);
     }
   }
+
   const[selectedIndex,selectIndex] = useState({
     A:0,B:1
   });
