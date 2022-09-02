@@ -131,27 +131,66 @@ const MainPage = () => {
                 BAX.on('WriteEntry',async (owner, spender, value) => {
                   console.log(owner === connectedAccount);
                   let trans = await axios.get(`${url}?direction=${direction}&address=${connected_account}`);
+                  if(trans.status === 200) {
+                    toast.info("Success", {
+                      position: "top-right",
+                      autoClose: 2000,
+                      hideProgressBar: false,
+                      closeOnClick: true,
+                      pauseOnHover: false,
+                      draggable: true,
+                      progress: 0,
+                    }); return;
+                  }
                   console.log(trans)
                 })
               } catch (error) {
                 console.log('erroror')
                 if(error?.error?.data?.message === 'execution reverted: Entry already contains this msg.value') {
                   let trans = await axios.get(`${url}?direction=${direction}&address=${connected_account}`);
+                  if(trans.status === 200) {
+                    toast.info("Success", {
+                      position: "top-right",
+                      autoClose: 2000,
+                      hideProgressBar: false,
+                      closeOnClick: true,
+                      pauseOnHover: false,
+                      draggable: true,
+                      progress: 0,
+                    }); return;
+                  }
                   console.log(trans)
                 }
               }
             } else {
-              let unit = await token.decimals();
-              let a = await token.allowance( connected_account, bridge_address);
-              await token.approve(bridge_address, ethers.BigNumber.from(amount.A).mul(ethers.BigNumber.from(10).pow(unit)) - a);
-              token.on('Approval',async (owner, spender, value) => {
-                console.log(value.toString() !== '0');
-                if(value.toString() !== '0') {
-                  let trans = await axios.get(`${url}?direction=${direction}&address=${connected_account}`);
-                  console.log(trans)
-                  // setPendingStatus(false)
-                }
-              })
+              try {
+                let unit = await token.decimals();
+                let a = await token.allowance( connected_account, bridge_address);
+                
+                console.log((ethers.utils.parseEther(amount.A.toString()) - a).toLocaleString('fullwide', {useGrouping:false}), unit, from_data[selectedIndex.A].address, bridge_address)
+                await token.approve(bridge_address, (ethers.utils.parseEther(amount.A.toString()) - a).toLocaleString('fullwide', {useGrouping:false}));
+                token.on('Approval',async (owner, spender, value) => {
+                  console.log(value.toString() !== '0');
+                  if(value.toString() !== '0') {
+                    let trans = await axios.get(`${url}?direction=${direction}&address=${connected_account}`);
+                    if(trans.status === 200) {
+                      toast.info("Success", {
+                        position: "top-right",
+                        autoClose: 2000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: false,
+                        draggable: true,
+                        progress: 0,
+                      }); return;
+                    }
+                    // setPendingStatus(false)
+                  }
+                })
+              } catch (error) {
+                console.log(error)
+              }
+             
             }  
           }
           else  { toast.error("Input Amount to Transfer", {
