@@ -12,6 +12,7 @@ import BridgeAssistAbi from '../../abis/BridgeAssist.json';
 
 import SelectBridge from '../../components/SelectBridge'
 const url = 'https://dbxbridge.uc.r.appspot.com/process';
+// const url = 'https://13.215.159.107:3002/process';
 
 const MainPage = () => {
 

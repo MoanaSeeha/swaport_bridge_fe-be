@@ -42,6 +42,7 @@ const Liquidity = () => {
   const [importStatus, setImportStatus] = useState(false);
   const [addLiqClick, setAddLiqClick] = useState(false);
   const [settokenValue,opensettokenValue] = useState(false);
+  const [removeLiq, setRemoveLiq] = useState(false);
   const [help, setHelp] = useState(false);
   const [tokenaddress,setTokenaddress] = useState({A:'0', B:'0'});
   const [tokenInfo,settokenInfo] = useState({
@@ -176,32 +177,6 @@ const inputTokenValueModal = () => (
       >
         <img src="/stable/closeBtn.svg" alt="" />
       </div>
-
-      <div className="liq_text">
-          <div className="large_text">
-            {addLiqClick === true ? "Add" : "Your"} Liquidity
-            {addLiqClick === true ? (
-              <span style={{ marginLeft: "5px" }} onClick={help_handler}>
-                <img src="/coin/help.svg" alt=""/>
-                {help === true ? (
-                  <div
-                    className="help_des"
-                    onClick={() => {
-                      setHelp(false);
-                    }}
-                  >
-                    Liquidity providers earn a 0.17% trading fee on all <br />{" "}
-                    trades made for that token pair, proportional to <br />{" "}
-                    their share of the liquidity pool.
-                  </div>
-                ) : null}
-              </span>
-            ) : null}
-          </div>
-          <div className="small_text">
-            Remove liquidity to receive tokens back
-          </div>
-      </div>
       <div className="liq_modal_text">
         <div className="import_token" style={{display: 'flex', alignItems: 'center', margin: '0 10px', flexDirection: 'column'}}>
           <div style={{'display': 'flex', 'flexDirection': 'column', marginBottom: '20px'}}>
@@ -328,9 +303,146 @@ const inputTokenValueModal = () => (
   </div>
 )
 
+const inputTokenValueToRemoveLiquidityModal = () => (
+  <div className="liq_modal">
+    <div className="liq_modal_layout">
+      <div
+        className="close_btn"
+        onClick={() => {
+          opensettokenValue(false)
+        }}
+      >
+        <img src="/stable/closeBtn.svg" alt="" />
+      </div>
+      <div className="liq_modal_text">
+        <div className="import_token" style={{display: 'flex', alignItems: 'center', margin: '0 10px', flexDirection: 'column'}}>
+          <div style={{'display': 'flex', 'flexDirection': 'column', marginBottom: '20px'}}>
+            <input type="text" placeholder={`Input ${tokenInfo.A.symbol} Amount`}  onChange={e => setTokenValue({A: e.target.value, B:tokenValue.B})}/>
+            <span>{tokenInfo.A.name + '  ' + tokenInfo.A.balance}</span>
+          </div>
+          <div style={{'display': 'flex', 'flexDirection': 'column'}}>
+            <input type="text" placeholder={`Input ${tokenInfo.B.symbol} Amount`}  onChange={e => setTokenValue({B: e.target.value, A:tokenValue.A})}/>
+            <span>{tokenInfo.B.name + '  ' + tokenInfo.B.balance}</span>
+          </div>
+          <div className="add_liq" style={{ marginBottom: '30px'}}>
+            <div className="add_liq_btn" onClick={async () => {
+              console.log('tokenInfotokenInfotokenInfotokenInfotokenInfotokenInfo', tokenInfo, tokenValue);
+              const signer = provider.getSigner(connected_account);
+              const router = new ethers.Contract(router_add, RouterABI, signer);
+                if(tokenInfo.A.address === '0') {
+                  console.log('==================')
+                  const token_B = new ethers.Contract(tokenInfo.B.address, ERC20ABI, signer);
+                  const options = {value: ethers.utils.parseEther(tokenValue.A.toString())}
+                  let a = await token_B.allowance( connected_account, router_add);
+                  if(a <= ethers.BigNumber.from(tokenValue.B)) {
+                    await token_B.approve(router_add, ethers.constants.MaxUint256);
+                    token_B.on('Approval',async (owner, spender, value) => {
+                      let tx = await router.addLiquidityETH(
+                        tokenInfo.B.address,
+                        ethers.BigNumber.from(tokenValue.B).mul(ethers.BigNumber.from(10).pow(tokenInfo.B.decimal)),
+                        ethers.BigNumber.from(tokenValue.B).mul(ethers.BigNumber.from(10).pow(tokenInfo.B.decimal)),
+                        ethers.utils.parseEther(tokenValue.A.toString()),
+                        connected_account,
+                        ethers.constants.MaxUint256,
+                        options);
+                      console.log(tx)
+                    })
+                  } else {
+                    let tx = await router.addLiquidityETH(
+                      tokenInfo.B.address,
+                      ethers.BigNumber.from(tokenValue.B).mul(ethers.BigNumber.from(10).pow(tokenInfo.B.decimal)),
+                      ethers.BigNumber.from(tokenValue.B).mul(ethers.BigNumber.from(10).pow(tokenInfo.B.decimal)),
+                      ethers.utils.parseEther(tokenValue.A.toString()),
+                      connected_account,
+                      ethers.constants.MaxUint256,
+                      options);
+                    console.log(tx)
+                  }
+                  
+                }
+                if(tokenInfo.B.address === '0') {
+                  console.log('++++++++++++++++++++++')
+                  const token_A = new ethers.Contract(tokenInfo.A.address, ERC20ABI, signer);
+                  let a = await token_A.allowance( connected_account, router_add);
+                  const options = {value: ethers.utils.parseEther(tokenValue.B.toString())}
+                  if(a <= ethers.BigNumber.from(tokenValue.A)) {
+                    await token_A.approve(router_add, ethers.constants.MaxUint256);
+                    token_A.on('Approval',async (owner, spender, value) => {
+                      let tx = await router.addLiquidityETH(
+                        tokenInfo.A.address,
+                        ethers.BigNumber.from(tokenValue.A).mul(ethers.BigNumber.from(10).pow(tokenInfo.A.decimal)),
+                        ethers.BigNumber.from(tokenValue.A).mul(ethers.BigNumber.from(10).pow(tokenInfo.A.decimal)),
+                        ethers.utils.parseEther(tokenValue.B.toString()),
+                        connected_account,
+                        ethers.constants.MaxUint256,
+                        options);
+                      console.log(tx)
+                    })
+                  } else {
+                    let tx = await router.addLiquidityETH(
+                        tokenInfo.A.address,
+                        ethers.BigNumber.from(tokenValue.A).mul(ethers.BigNumber.from(10).pow(tokenInfo.A.decimal)),
+                        ethers.BigNumber.from(tokenValue.A).mul(ethers.BigNumber.from(10).pow(tokenInfo.A.decimal)),
+                        ethers.utils.parseEther(tokenValue.B.toString()),
+                        connected_account,
+                        ethers.constants.MaxUint256,
+                        options);
+                    console.log(tx)
+                  }
+                   
+                }
+                if(tokenInfo.A.address !== '0' && tokenInfo.B.address !== '0' ) {
+                  console.log('\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\')
+                  const token_A = new ethers.Contract(tokenInfo.A.address, ERC20ABI, signer);
+                  const token_B = new ethers.Contract(tokenInfo.B.address, ERC20ABI, signer);
+                  let a = await token_A.allowance( connected_account, router_add);
+                  if(a <= ethers.BigNumber.from(tokenValue.A))
+                    await token_A.approve(router_add, ethers.constants.MaxUint256);
+                  let b = await token_B.allowance( connected_account, router_add);
+                  if(b <= ethers.BigNumber.from(tokenValue.B)) {
+                    await token_B.approve(router_add, ethers.constants.MaxUint256);
+                    token_B.on('Approval',async (owner, spender, value) => {
+                     let tx = await router.addLiquidity(
+                        tokenInfo.A.address,
+                        tokenInfo.B.address,
+                        ethers.BigNumber.from(tokenValue.A).mul(ethers.BigNumber.from(10).pow(tokenInfo.A.decimal)),
+                        ethers.BigNumber.from(tokenValue.B).mul(ethers.BigNumber.from(10).pow(tokenInfo.B.decimal)),
+                        ethers.BigNumber.from(tokenValue.A).mul(ethers.BigNumber.from(10).pow(tokenInfo.A.decimal)),
+                        ethers.BigNumber.from(tokenValue.B).mul(ethers.BigNumber.from(10).pow(tokenInfo.B.decimal)),
+                        connected_account,
+                        ethers.constants.MaxUint256
+                      )
+                      console.log(tx)
+                    })
+                  }
+                  else {
+                    let tx = await router.addLiquidity(
+                      tokenInfo.A.address,
+                      tokenInfo.B.address,
+                      ethers.BigNumber.from(tokenValue.A).mul(ethers.BigNumber.from(10).pow(tokenInfo.A.decimal)),
+                      ethers.BigNumber.from(tokenValue.B).mul(ethers.BigNumber.from(10).pow(tokenInfo.B.decimal)),
+                      ethers.BigNumber.from(tokenValue.A).mul(ethers.BigNumber.from(10).pow(tokenInfo.A.decimal)),
+                      ethers.BigNumber.from(tokenValue.B).mul(ethers.BigNumber.from(10).pow(tokenInfo.B.decimal)),
+                      connected_account,
+                      ethers.constants.MaxUint256
+                    );
+                    console.log('-=-=-=-=-=-=-=-=--=',tx);
+                  }
+                }
+
+            }}>
+              Remove Liquidity
+            </div>
+          </div>
+        </div>  
+      </div>
+    </div>
+  </div>
+)
+
   return (
     <div className="">
-        {settokenValue?inputTokenValueModal():null}
+        {settokenValue?(removeLiq?inputTokenValueToRemoveLiquidityModal():inputTokenValueModal()):null}
         {open.A || open.B ? (
           <div className="liq_modal">
             <div className="liq_modal_layout">
@@ -344,7 +456,7 @@ const inputTokenValueModal = () => (
               </div>
               <div className="liq_modal_text">
               <div className="import_token" style={{display: 'flex', alignItems: 'stretch', margin: '0 10px'}}>
-                <input type="text" placeholder="Import Token By Address" onChange={e => setInputValue(e.target.value)} />
+                <input type="text" placeholder="Import Token By Address" onChange={e => setInputValue(e.target.value)} style={{'marginRight': '20px'}}/>
                 <div style={{
                   padding: '10px',
                   borderRadius: '10px',
@@ -371,35 +483,6 @@ const inputTokenValueModal = () => (
                     });
   
                     let tokenName, tokenUnits, tokenbalance, tokenBalance, tokenSymbol;
-                    // if(tokenaddress.A === '0') {
-                    //   tokenNameA = 'DBX';
-                    //   tokenUnitsA = 18;
-                    //   tokenbalance = await provider.getBalance(connected_account);
-                    //   tokenBalanceA = ethers.utils.formatEther(tokenbalance);
-                    //   tokenSymbolA = 'DBX';
-                    // } else {
-                    //   const token_A = new ethers.Contract(tokenaddress.A, ERC20ABI, provider);
-                    //   tokenNameA = await token_A.name();
-                    //   tokenUnitsA = await token_A.decimals();
-                    //   tokenbalance = await token_A.balanceOf(connected_account);
-                    //   tokenBalanceA = ethers.utils.formatUnits(tokenbalance, tokenUnitsA);
-                    //   tokenSymbolA = await token_A.symbol();
-                    // } 
-                    // if(tokenaddress.B === '0') {
-                    //   tokenNameB = 'DBX';
-                    //   tokenUnitsB = 18;
-                    //   tokenbalance = await provider.getBalance(connected_account);
-                    //   tokenBalanceB = ethers.utils.formatEther(tokenbalance);
-                    //   tokenSymbolB = 'DBX';
-                    // } else {
-                    //   const token_B = new ethers.Contract(tokenaddress.B, ERC20ABI, provider);
-                    //   tokenNameB = await token_B.name();
-                    //   tokenUnitsB = await token_B.decimals();
-                    //   tokenbalanceb = await token_B.balanceOf(connected_account);
-                    //   tokenBalanceB = ethers.utils.formatUnits(tokenbalanceb, tokenUnitsB);
-                    //   tokenSymbolB = await token_B.symbol();
-  
-                    // }
                     const token = new ethers.Contract(inputValue, ERC20ABI, provider);
                       tokenName = await token.name();
                       tokenUnits = await token.decimals();
@@ -513,7 +596,7 @@ const inputTokenValueModal = () => (
         {/* Text  */}
         <div className="liq_text">
           <div className="large_text">
-            {addLiqClick === true ? "Add" : "Your"} Liquidity
+            {addLiqClick === true ? "Add or Remove" : "Your"} Liquidity
             {addLiqClick === true ? (
               <span style={{ marginLeft: "5px" }} onClick={help_handler}>
                 <img src="/coin/help.svg" alt=""/>
@@ -531,9 +614,6 @@ const inputTokenValueModal = () => (
                 ) : null}
               </span>
             ) : null}
-          </div>
-          <div className="small_text">
-            Remove liquidity to receive tokens back
           </div>
         </div>
         {/* Text End */}
@@ -576,7 +656,21 @@ const inputTokenValueModal = () => (
           </div>
         )}
         {/* End Main */}
-        
+        <div className="liq_text">
+          <div className="small_text">
+            Remove liquidity to receive tokens back
+          </div>
+          {addLiqClick === false ? null : (
+            <div>
+              <div className="rmv_liq_btn" onClick={() => {
+                setRemoveLiq(true)
+                add_liquidity_handler()
+                }}>
+                Remove Liquidity
+              </div>
+            </div>
+          )}
+        </div>
         {/* Bottom btns */}
         {addLiqClick === false ? (
           <div className="transfer_part">
@@ -590,7 +684,7 @@ const inputTokenValueModal = () => (
               <img src="/coin/backarrow.svg" alt=""/>
               <div className="back_text">Back</div>
             </div>
-            <div className="add_liq_btn" onClick={add_liquidity_handler}>
+            <div className="add_liq_btn" onClick={() => {setRemoveLiq(false);add_liquidity_handler()}}>
               Add Liquidity
             </div>
           </div>

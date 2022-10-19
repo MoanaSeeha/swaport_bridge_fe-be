@@ -1,10 +1,8 @@
 .liq_text {
-  height: 30% !important;
   display: flex;
-  width: 100%;
-  padding-left: 14%;
+  align-items: flex-start;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: start;
 }
 .liq_text .large_text {
   margin-top: 25px !important;
@@ -149,6 +147,24 @@
   background: white;
   color: #ce4667;
 }
+.rmv_liq_btn {
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 90px;
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 18px;
+  background: #858585;
+  border-radius: 55px;
+  color: white;
+}
+.rmv_liq_btn:hover {
+  background: white;
+  color: #484848;
+}
 
 .add_liq .back_btn {
   cursor: pointer;
@@ -181,7 +197,7 @@
   /* transform: translateY(-50px); */
 }
 
-.liq_main::before {
+/* .liq_main::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -196,7 +212,7 @@
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
-}
+} */
 /* Import Modal */
 
 /* TransferModal>> */

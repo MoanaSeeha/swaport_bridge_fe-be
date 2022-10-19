@@ -10,7 +10,8 @@ import { connectedAccount, connectedChain } from "../../store/accountReducer";
 import SelectStable from '../../components/SelectStable'
 import ERC20ABI from '../../abis/ERC20.json';
 
-const url = 'https://swaport-stable-bridge-bot.vercel.app/process';
+// const url = 'https://swaport-stable-bridge-bot.vercel.app/process';
+const url = 'http://13.215.159.107:3002/process';
 const Stable = () => {
   const from_data = [
     {
@@ -18,8 +19,8 @@ const Stable = () => {
       chainIcon: '/coin/usdt.svg',
       coinName: 'ETH',
       coinIcon: '/coin/usdt.svg',
-      address: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
-      bridge: ['0x0Cb3E433522981986a4f3b8ab00471e165467c27', '0x99908fd126a6021a5c132c464dfde83461aa9ba4'],
+      address: '0xdAC17F958D2ee523a2206206994597C13D831ec7',//usdt
+      bridge: ['0x5c4a4d8c4c460D68c42bDDb51229B6cdC4D4530b', '0x2d58b360c339cd331ac091ffa1e8ea1d7b5e8ec5'],
       chainId: '1'
     },
     {
@@ -27,8 +28,8 @@ const Stable = () => {
       chainIcon: '/coin/usdc.svg',
       coinName: 'BSC',
       coinIcon: '/coin/usdc.svg',
-      address: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
-      bridge: ['0x7159a5d1F3917331a38817F9d1f02bd8A909BCA9', '0x5B5409dC681d28fF023d63D32a45680E8512D62e'],
+      address: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',//usdc
+      bridge: ['0x4e173D605d56864451098a743cC6e941f9BD11A4', '0x5c05a737040acb2ade3601800dbc965690163d11'],
       chainId: '56'
     },
     {
@@ -37,7 +38,7 @@ const Stable = () => {
       coinName: 'DBX',
       coinIcon: '/coin/xus.svg',
       address: '0x91efa3FC448b7FCD40880F3ef650eB99635e6143',
-      bridge: ['0xD316FF00Df4aF261D82595cF26555a5bd80D418d'],
+      bridge: ['0x2D58B360c339CD331Ac091ffA1e8eA1d7b5E8Ec5'],
       chainId: '5348'
     },
   ]
