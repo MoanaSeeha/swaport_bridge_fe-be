@@ -55,7 +55,6 @@ const Stable = () => {
   const connected_account = useSelector(connectedAccount);
   let signer = connected_account === ''?null:provider.getSigner(connected_account);
   const connected_chain = useSelector(connectedChain);
-  console.log(connected_chain, typeof connected_chain);
   const transferHandler = async () => {
     // setTransferStatus(true)
     
@@ -212,7 +211,7 @@ const Stable = () => {
         {/* TO  */}
         <div className="to_text">To</div>
         <div className="select_input">
-          <input type="text" />
+          <input type="text" value={(Number(amount.A)*9/10).toString()}/>
           <div className="balance_text">
             <span className="balance">Balance:</span>{' '}
             <span className="dbx">{} DBX</span>
